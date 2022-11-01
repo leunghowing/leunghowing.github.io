@@ -10,7 +10,9 @@
 
 <body>
     
-<div id="Title">Nahrverkehr</div><br><br>
+<div id="Title">Nahrverkehr</div>
+<div id="clock"></div>
+<br><br>
 <div class="BusStop">Lo Tsz Tin
 <div id="LoTszTin" class="kmb">Loading...</div>
 </div>
@@ -22,6 +24,21 @@ const json = '{"result":true, "count":42}';
 const obj = JSON.parse(json);
 console.log(obj['result']);
 
+setInterval(getTime, 1000)
+
+function getTime(){
+    var timenow = "";
+    $.ajax({
+        type: 'GET',
+        url:'http://worldtimeapi.org/api/timezone/Asia/Hong_Kong',
+        dataType: 'json',
+        async : false,
+        success: function(data){
+            timenow = data['datetime'].substring(11,19);
+        }
+    });
+    $("#clock").html(timenow);
+}
 function getStop(stopid){
     var response = "<table><tr><th>Linie</th><th>Ziel</th><th>Abfahrt</th></tr>";
     $.ajax({
