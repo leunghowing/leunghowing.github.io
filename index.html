@@ -3,6 +3,7 @@
 <head>
 <title>KMB</title>
     <meta name="description" content="Testing">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel = "stylesheet" href = "style.css">
 </head>
 <script src = "jquery-3.6.1.min.js">  </script>
@@ -22,7 +23,7 @@ const obj = JSON.parse(json);
 console.log(obj['result']);
 
 function getStop(stopid){
-    var response = "<table><tr><th>Linie</th><th>Abfahrt</th></tr>";
+    var response = "<table><tr><th>Linie</th><th>Ziel</th><th>Abfahrt</th></tr>";
     $.ajax({
         type: 'GET',
         url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/'+ stopid,
@@ -34,7 +35,7 @@ function getStop(stopid){
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['eta']!=null){
                     console.log("hi");
-                    response = response + "<tr><td>" + data['data'][i]['route'] + "</td><td>"+  data['data'][i]['eta'].substring(11,16) + "</td></tr>";
+                    response = response + "<tr><td>" + data['data'][i]['route'] + "</td><td>"+ data['data'][i]['dest_tc'] + "</td><td>"+ data['data'][i]['eta'].substring(11,16) + "</td></tr>";
                     console.log(response);
                     j++;
                 }
@@ -48,7 +49,7 @@ function getStop(stopid){
 }
 
 document.getElementById("LoTszTin").innerHTML = getStop("9AB9D810103D8382");
-document.getElementById("EHC").innerHTML = getStop("991E47DBD416B908");
+document.getElementById("EHC").innerHTML = getStop("991E47DBD416B908") + getStop("D678B3364437D16B");
 
 
 </script>
