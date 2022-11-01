@@ -35,9 +35,10 @@ function getTime(){
         async : false,
         success: function(data){
             timenow = data['datetime'].substring(11,19);
+            $("#clock").html(timenow);
         }
     });
-    $("#clock").html(timenow);
+   
 }
 function getStop(stopid){
     var response = "<table><tr><th>Linie</th><th>Ziel</th><th>Abfahrt</th></tr>";
