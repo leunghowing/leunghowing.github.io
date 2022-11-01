@@ -1,0 +1,27 @@
+body {
+  font-family: "Helvetica", Sans-Serif;
+  background-color: black;
+  color:white;
+}
+.BusStop {
+  font-weight: bold;
+}
+#Title{
+    font-size: 16px;
+    font-weight: lighter;
+}
+.kmb tbody tr th:first-child{
+  width: 3em;
+  font-weight: bold;
+  text-align:center;
+ }
+.kmb tbody tr td:first-child {
+  width: 3em;
+  border-left: 5px solid red;
+  font-weight: bold;
+  text-align:center;
+ }
+ .kmb tbody tr th:last-child,td:last-child {
+  width: 10em;
+  text-align:right;
+ }

@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<title>KMB</title>
+    <meta name="description" content="Testing">
+    <link rel = "stylesheet" href = "style.css">
+</head>
+<script src = "jquery-3.6.1.min.js">  </script>
+
+<body>
+    
+<div id="Title">Nahrverkehr</div><br>
+<div class="BusStop">Lo Tsz Tin
+<div id="LoTszTin" class="kmb">Loading...</div>
+</div>
+<script> 
+const json = '{"result":true, "count":42}';
+const obj = JSON.parse(json);
+console.log(obj['result']);
+
+function getLoTszTin(){
+    var response = "<table><tr><th>Linie</th><th>Abfahrt</th></tr>";
+    $.ajax({
+        type: 'GET',
+        url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/9AB9D810103D8382',
+        dataType: 'json',
+        async : false,
+        success: function(data){
+            
+            let j = 1;
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['eta']!=null){
+                    console.log("hi");
+                    response = response + "<tr><td>" + data['data'][i]['route'] + "</td><td>"+  data['data'][i]['eta'].substring(11,16) + "</td></tr>";
+                    console.log(response);
+                    j++;
+                }
+            }
+            response = response + "</table>";
+        }
+    });
+    return response;
+
+   // return "No response";
+}
+
+document.getElementById("LoTszTin").innerHTML = getLoTszTin();
+
+
+</script>
+</body>
+</html>
