@@ -11,7 +11,7 @@
 <body>
     
 <div id="Title">Nahrverkehr</div>
-<div id="clock">--:--</div>
+<div id="clock">--:--:--</div>
 <br><br>
 <div class="BusStop">Lo Tsz Tin
 <div id="LoTszTin" class="kmb">Loading...</div>
@@ -24,7 +24,6 @@ const json = '{"result":true, "count":42}';
 const obj = JSON.parse(json);
 console.log(obj['result']);
 
-setInterval(getTime, 1000);
 
 function getTime(){
     var timenow = "";
@@ -70,6 +69,8 @@ document.getElementById("LoTszTin").innerHTML = getStop("9AB9D810103D8382");
 document.getElementById("EHC").innerHTML = getStop("991E47DBD416B908") + getStop("D678B3364437D16B");
 
 
+var timefunc = getTime();
+var run = setInterval("timefunc", 1000);
 </script>
 </body>
 </html>
