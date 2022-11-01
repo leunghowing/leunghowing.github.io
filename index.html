@@ -11,7 +11,7 @@
 <body>
     
 <div id="Title">Nahrverkehr</div>
-<div id="clock"></div>
+<div id="clock">--:--</div>
 <br><br>
 <div class="BusStop">Lo Tsz Tin
 <div id="LoTszTin" class="kmb">Loading...</div>
@@ -24,7 +24,7 @@ const json = '{"result":true, "count":42}';
 const obj = JSON.parse(json);
 console.log(obj['result']);
 
-setInterval(getTime, 1000)
+setInterval(getTime, 1000);
 
 function getTime(){
     var timenow = "";
