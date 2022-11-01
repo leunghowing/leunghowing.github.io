@@ -10,6 +10,9 @@ body {
     font-size: 16px;
     font-weight: lighter;
 }
+.kmb {
+  margin: 1em;
+}
 .kmb tbody tr th:first-child{
   width: 3em;
   font-weight: bold;
