@@ -29,7 +29,7 @@ function getTime(){
     var timenow = "";
     $.ajax({
         type: 'GET',
-        url:'http://worldtimeapi.org/api/timezone/Asia/Hong_Kong',
+        url:'https://timeapi.io/api/Time/current/zone?timeZone=Asia/Hong_Kong',
         dataType: 'json',
         async : false,
         success: function(data){
