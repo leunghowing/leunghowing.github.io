@@ -28,8 +28,8 @@
 <div class="BusStop">Sunway Gdn
     <div id="sunway" class="kmb">Lädt...</div>
 </div>
-<div class="BusStop">EHC Nordwärts
-    <div id="dddd" class="kmb">Lädt...</div>
+<div class="BusStop">Opp Sunway Gdn
+    <div id="oppsunway" class="kmb">Lädt...</div>
 </div>
 
 
@@ -113,6 +113,8 @@ function refresh(){
     document.getElementById("EHCS").innerHTML = tablehead + getStop("9535298A652873DB",["606","613"])+ "</table>";
     document.getElementById("EHC").innerHTML = tablehead + getStop("991E47DBD416B908",["307","680","681","307P"]) + getStop("D678B3364437D16B",["673"]) + "</table>";
     document.getElementById("sunway").innerHTML = tablehead + getStop("633C082A94176ED0",["307P","678"])+ "</table>";
+    document.getElementById("oppsunway").innerHTML = tablehead + getStop("75CE4282D2043790",["606"])+ "</table>";
+
 }
 
 getTime();
