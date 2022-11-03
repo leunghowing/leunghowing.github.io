@@ -54,7 +54,7 @@ function getTime(){
 
 function addupRoutes(resp, data, number){
     resp = resp + "<tr><td>" + data['data'][number]['route'] + "</td><td>"+ data['data'][number]['eta'].substring(11,16) + "</td><td><span id='ziel'>" +  data['data'][number]['dest_tc'] + "</span></td>";
-    var diff =(new Date(Date.parse(data['data'][number]['eta'])).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+    var diff =(new Date(Date.parse(data['data'][number]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
     diff /= 60;
     if( diff < 1 ){
         resp = resp + "<td></td>";
