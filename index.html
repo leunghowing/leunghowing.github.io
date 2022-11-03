@@ -25,6 +25,13 @@
 <div class="BusStop">EHC Nordwärts
     <div id="EHC" class="kmb">Lädt...</div>
 </div>
+<div class="BusStop">Sunway Gdn
+    <div id="sunway" class="kmb">Lädt...</div>
+</div>
+<div class="BusStop">EHC Nordwärts
+    <div id="dddd" class="kmb">Lädt...</div>
+</div>
+
 
 
 
@@ -96,7 +103,7 @@ function getStop(stopid,routes){
         }
     });
     if(response == ""){
-        response = "Kein Daten";
+        response = "Keine Daten";
     }
     return response;
 
@@ -105,7 +112,7 @@ function refresh(){
     document.getElementById("LoTszTin").innerHTML = tablehead + getStop("9AB9D810103D8382") + "</table>";
     document.getElementById("EHCS").innerHTML = tablehead + getStop("9535298A652873DB",["606","613"])+ "</table>";
     document.getElementById("EHC").innerHTML = tablehead + getStop("991E47DBD416B908",["307","680","681","307P"]) + getStop("D678B3364437D16B",["673"]) + "</table>";
-
+    document.getElementById("sunway").innerHTML = tablehead + getStop("633C082A94176ED0",["307P","678"])+ "</table>";
 }
 
 getTime();

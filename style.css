@@ -30,7 +30,7 @@ body {
  }
 
 .kmb tbody tr th:nth-child(3), td:nth-child(3){
-  width: 7em;
+  width: 8em;
 }
 .kmb tbody tr td:first-child {
   width: 2.5em;
