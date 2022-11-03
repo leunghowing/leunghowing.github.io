@@ -13,19 +13,28 @@
 <body>
     
 <div id="Title">Nahrverkehr</div>
-<div id="clock">--:--:--</div>
+<span id="clock">--:--:--</span>
+
 <br><br>
 <div class="BusStop">Lo Tsz Tin
-<div id="LoTszTin" class="kmb">Loading...</div>
+<div id="LoTszTin" class="kmb">Lädt...</div>
 </div>
-<div class="BusStop">EHC
-    <div id="EHC" class="kmb">Loading...</div>
-    </div>
+<div class="BusStop">EHC Südwärts
+    <div id="EHCS" class="kmb">Lädt...</div>
+</div>
+<div class="BusStop">EHC Nordwärts
+    <div id="EHC" class="kmb">Lädt...</div>
+</div>
+
+
+
 <script> 
 const json = '{"result":true, "count":42}';
 const obj = JSON.parse(json);
 console.log(obj['result']);
 
+var datetimenow = "";
+var tablehead = "<table><tr><th>Linie</th><th>Zeit</th><th>Ziel</th><th><span style='font-size:12px'>Abfahrt in</span></th></tr>";
 
 function getTime(){
     var timenow = "";
@@ -35,44 +44,74 @@ function getTime(){
         dataType: 'json',
         async : false,
         success: function(data){
+            datetimenow = data['datetime'].substring(0,19);
             timenow = data['datetime'].substring(11,19);
             $("#clock").html(timenow);
         }
     });
    
 }
-function getStop(stopid){
-    var response = "<table><tr><th>Linie</th><th>Ziel</th><th>Abfahrt</th></tr>";
+
+function addupRoutes(resp, data, number){
+    resp = resp + "<tr><td>" + data['data'][number]['route'] + "</td><td>"+ data['data'][number]['eta'].substring(11,16) + "</td><td><span id='ziel'>" +  data['data'][number]['dest_tc'] + "</span></td>";
+    var diff =(new Date(Date.parse(data['data'][number]['eta'])).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+    diff /= 60;
+    if( diff < 1 ){
+        resp = resp + "<td></td>";
+    }
+    else if(Math.round(diff) < 60){
+        resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> Min.</span></td>";
+    }
+    else{
+        resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'>  Std.</span></td>";
+    }
+    console.log(diff);
+    resp = resp + "</tr>"; 
+    return resp;
+}
+
+function getStop(stopid,routes){
+    var response = "";
     $.ajax({
         type: 'GET',
         url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/'+ stopid,
         dataType: 'json',
         async : false,
         success: function(data){
-            
             let j = 1;
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['eta']!=null){
-                    console.log("hi");
-                    response = response + "<tr><td>" + data['data'][i]['route'] + "</td><td>"+ data['data'][i]['dest_tc'] + "</td><td>"+ data['data'][i]['eta'].substring(11,16) + "</td></tr>";
-                    console.log(response);
-                    j++;
+                    if(routes){
+                            if(routes.includes(data['data'][i]['route'])){
+                                response = addupRoutes(response, data, i);
+                                j++;
+                            }
+                    }
+                    else{
+                        response = addupRoutes(response, data, i);
+                        j++;
+                    }
                 }
             }
-            response = response + "</table>";
         }
     });
+    if(response == ""){
+        response = "Kein Daten";
+    }
     return response;
 
-   // return "No response";
+}
+function refresh(){
+    document.getElementById("LoTszTin").innerHTML = tablehead + getStop("9AB9D810103D8382") + "</table>";
+    document.getElementById("EHCS").innerHTML = tablehead + getStop("9535298A652873DB",["606","613"])+ "</table>";
+    document.getElementById("EHC").innerHTML = tablehead + getStop("991E47DBD416B908",["307","680","681","307P"]) + getStop("D678B3364437D16B",["673"]) + "</table>";
+
 }
 
-document.getElementById("LoTszTin").innerHTML = getStop("9AB9D810103D8382");
-document.getElementById("EHC").innerHTML = getStop("991E47DBD416B908") + getStop("D678B3364437D16B");
-
 getTime();
-//var timefunc = getTime();
-//var run = setInterval("timefunc", 1000);
+setInterval(getTime,1000);
+refresh();
+setInterval(refresh,10000);
 </script>
 </body>
 </html>

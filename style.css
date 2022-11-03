@@ -6,31 +6,45 @@ body {
 .BusStop {
   font-weight: bold;
 }
-#Title{
-    font-size: 16px;
-    font-weight: lighter;
+#Title {
+  font-weight: lighter;
+}
+#clock{
+  text-align: right;
 }
 .kmb {
   margin: 1em;
 }
-.kmb tbody tr th:first-child{
+/*
+.kmb th,td{
+  border: 1px solid #ddd;
+}*/
+.kmb tbody tr th,td{
+  text-align: left;
   width: 3em;
+}
+.kmb tbody tr th:first-child{
+  width: 2.5em;
   font-weight: bold;
   text-align:center;
  }
-.kmb tbody tr th{
-  text-align:left;
- }
-.kmb tbody tr th:nth-child(2),td:nth-child(2) {
-  width: 10em;
+
+.kmb tbody tr th:nth-child(3), td:nth-child(3){
+  width: 7em;
 }
 .kmb tbody tr td:first-child {
-  width: 3em;
+  width: 2.5em;
   border-left: 5px solid red;
   font-weight: bold;
-  text-align:center;
+  text-align: left;
+  padding-left: 0.5em;
  }
  .kmb tbody tr th:last-child,td:last-child {
-  width: 5em;
+  width: 3.7em;
   text-align:right;
  }
+#ziel{
+  max-height:20px;
+  overflow:hidden;
+  display:block;
+}
