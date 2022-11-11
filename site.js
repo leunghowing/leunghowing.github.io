@@ -13,7 +13,7 @@ function addupRoutes(resp, data, number){
     else{
         resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'>  Std.</span></td>";
     }
-    console.log(diff);
+    //console.log(diff);
     resp = resp + "</tr>"; 
     return resp;
 }
@@ -63,7 +63,10 @@ function getSingleRouteStop(stopid,route){
             let j = 1;
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['route'] == route){
-                    response = data['data'][i]['eta'].substring(11,16);
+                    if(response!=""){
+                        response += "<br>";
+                    }
+                    response = response + data['data'][i]['eta'].substring(11,16);
                     console.log(response);
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                     diff /= 60;
@@ -73,8 +76,6 @@ function getSingleRouteStop(stopid,route){
                     else{
                         response = response +" (" + Math.round(diff) + " Min)";
                     }
-                    console.log(response);
-                    return response;
                 }
             }
         }
@@ -84,5 +85,43 @@ function getSingleRouteStop(stopid,route){
     if(response == ""){
         response = "-";
     }
+    return response;
+}
+
+function getSingleRouteStops(route, bound, seq){
+    var response = [];
+    $.ajax({
+        type: 'GET',
+        url:'https://data.etabus.gov.hk/v1/transport/kmb/route-eta/'+ route + "/1",
+        dataType: 'json',
+        async : false,
+        success: function(data){
+            let j = 0;
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['dir'] == bound && data['data'][i]['seq']==seq[j]){
+                    if(response[j]==null){
+                        response[j] = ""; 
+                    }
+                    if(response[j]!=""){
+                        response[j] += "<br>";
+                    }
+                    response[j] = response[j] + data['data'][i]['eta'].substring(11,16);
+                    var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                    diff /= 60;
+                    if( diff < 1 ){
+                        response[j] = response[j] + " (0 Min)";
+                    }
+                    else{
+                        response[j] = response[j] +" (" + Math.round(diff) + " Min)";
+                    }
+                    //console.log(response[j]);
+                    if(data['data'][i+1]['seq']!=null && data['data'][i+1]['seq']!=data['data'][i]['seq']){
+                        j++;
+                    }
+                }
+            }
+            //console.log(response);
+        }
+    });
     return response;
 }
