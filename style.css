@@ -66,7 +66,7 @@ body {
 .tabs button {
   background-color: inherit;
   width: 30vw;
-  min-width: 5em;
+  min-width: 4em;
   color: white;
   cursor: pointer;
   transition: 0.5s;
