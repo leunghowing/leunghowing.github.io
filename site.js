@@ -67,7 +67,7 @@ function getSingleRouteStop(stopid,route){
                         response += "<br>";
                     }
                     response = response + data['data'][i]['eta'].substring(11,16);
-                    console.log(response);
+                    //console.log(response);
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                     diff /= 60;
                     if( diff < 1 ){
@@ -80,7 +80,7 @@ function getSingleRouteStop(stopid,route){
             }
         }
     });
-    console.log("hhfuhfuhfuhfueh");
+    //console.log("hhfuhfuhfuhfueh");
 
     if(response == ""){
         response = "-";
