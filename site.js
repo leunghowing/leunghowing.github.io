@@ -105,14 +105,15 @@ function getSingleRouteStops(route, bound, seq){
                     if(response[j]!=""){
                         response[j] += "<br>";
                     }
-                    response[j] = response[j] + data['data'][i]['eta'].substring(11,16);
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                     diff /= 60;
-                    if( diff < 1 ){
-                        response[j] = response[j] + " (0 Min)";
+                    if( diff < 0){
+                    }
+                    else if( diff < 1 ){
+                        response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
                     }
                     else{
-                        response[j] = response[j] +" (" + Math.round(diff) + " Min)";
+                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
                     }
                     //console.log(response[j]);
                     if(data['data'][i+1]['seq']!=null && data['data'][i+1]['seq']!=data['data'][i]['seq']){
