@@ -93,7 +93,7 @@
 <script> 
 const json = '{"result":true, "count":42}';
 const obj = JSON.parse(json);
-console.log(obj['result']);
+//console.log(obj['result']);
 
 var tablehead = "<table><tr><th>Linie</th><th>Zeit</th><th>Ziel</th><th><span style='font-size:12px'>Abfahrt in</span></th></tr>";
 
@@ -124,7 +124,7 @@ function getTime(){
 
 function refreshLinien(){
     var LinienResponse = getSingleRouteStops("75K","O",[1,2,3,4,5,7,8]);
-    console.log(LinienResponse);
+    //console.log(LinienResponse);
     document.getElementById("TPM75K").innerHTML = LinienResponse[0];
     document.getElementById("TPHMkt75K").innerHTML = LinienResponse[1];
     document.getElementById("PHSt75K").innerHTML = LinienResponse[2];
