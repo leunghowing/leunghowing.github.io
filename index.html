@@ -123,7 +123,7 @@ function getTime(){
 }
 
 function refreshLinien(){
-    var LinienResponse = getSingleRouteStops("75K","O",[1,2,3,4,5,7,8]);
+    var LinienResponse = getSingleRouteStops("75K","I",[1,2,3,4,5,7,8]);
     //console.log(LinienResponse);
     document.getElementById("TPM75K").innerHTML = LinienResponse[0];
     document.getElementById("TPHMkt75K").innerHTML = LinienResponse[1];
@@ -173,7 +173,7 @@ function switchTab(evt, tabname) {
   document.getElementById(tabname).style.display = "block";
   setTimeout(function(){
     document.getElementById(tabname).className += " current";
-  },10);
+  },1);
   evt.currentTarget.className += " active";
 }
 
