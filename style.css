@@ -90,7 +90,7 @@ body {
   color: white;
   margin-top: 1em;
   opacity: 1;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .haltestelleTabelle td,.haltestelleTabelle th{
