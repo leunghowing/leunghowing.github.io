@@ -90,6 +90,7 @@ body {
   color: white;
   margin-top: 1em;
   opacity: 1;
+  transition: 0.5s;
 }
 
 .haltestelleTabelle td,.haltestelleTabelle th{
@@ -114,4 +115,8 @@ body {
 }
 .LinienModul{
   padding: 1em;
+}
+#Wrap1{
+  display: flex;
+  justify-content: center
 }
