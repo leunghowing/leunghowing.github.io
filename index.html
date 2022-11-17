@@ -104,13 +104,12 @@ function init(){
     tabcontent[i].style.display = "none";
     tabcontent[i].className = tabcontent[i].className.replace(" current","");
     }
-    getTime();
+    getTime(1);
     setInterval(getTime,1000);
-    setTimeout(refresh,200);
     setInterval(refresh,10000);
 }
 
-function getTime(){
+function getTime(firstload){
     var timenow = "";
     $.ajax({
         type: 'GET',
@@ -120,6 +119,7 @@ function getTime(){
             datetimenow = data['datetime'].substring(0,19);
             timenow = data['datetime'].substring(11,19);
             $("#clock").html(timenow);
+            if(firstload) refresh();
         }
     });
    
