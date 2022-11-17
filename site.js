@@ -52,6 +52,42 @@ function getStop(stopids,routes){
     return response;
 }
 
+function getStopAsync(element, stopids, routes){
+    var response = "";
+    for(var k=0; k < stopids.length; k++){
+        $.ajax({
+            type: 'GET',
+            url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/'+ stopids[k],
+            dataType: 'json',
+            success: function(data){
+                let j = 1;
+                for(var i = 0; i < data['data'].length; i++ ){ 
+                    if(data['data'][i]['eta']!=null){
+                        if(routes){
+                                if(routes.includes(data['data'][i]['route'])){
+                                    response = addupRoutes(response, data, i);
+                                    j++;
+                                }
+                        }
+                        else{
+                            response = addupRoutes(response, data, i);
+                            j++;
+                        }
+                    }
+                }
+                if(response == ""){
+                    document.getElementById(element).innerHTML = "Keine Daten";
+                }
+                else{
+                    document.getElementById(element).innerHTML = tablehead + response + "</table>";
+                }
+                
+            }
+        });
+    }
+
+}
+
 function getSingleRouteStop(stopid,route){
     var response = "";
     $.ajax({
@@ -125,4 +161,44 @@ function getSingleRouteStops(route, bound, seq){
         }
     });
     return response;
+}
+function getSingleRouteStopsAsync(route, bound, seq, stopnames){
+    var response = [];
+    $.ajax({
+        type: 'GET',
+        url:'https://data.etabus.gov.hk/v1/transport/kmb/route-eta/'+ route + "/1",
+        dataType: 'json',
+        success: function(data){
+            let j = 0;
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['dir'] == bound && data['data'][i]['seq']==seq[j]){
+                    if(response[j]==null){
+                        response[j] = ""; 
+                    }
+                    if(response[j]!=""){
+                        response[j] += "<br>";
+                    }
+                    var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                    diff /= 60;
+                    if( diff < 0){
+                    }
+                    else if( diff < 1 ){
+                        response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                    }
+                    else{
+                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                    }
+                    //console.log(response[j]);
+                    if(data['data'][i+1]['seq']!=null && data['data'][i+1]['seq']!=data['data'][i]['seq']){
+                        j++;
+                    }
+                }
+            }
+            for(let d = 0; d < response.length; d++){
+                document.getElementById(stopnames[d]).innerHTML = response[d];
+            }
+            
+            //console.log(response);
+        }
+    });
 }
