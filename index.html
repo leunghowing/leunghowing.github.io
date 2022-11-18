@@ -18,7 +18,7 @@
 <div class="tabs">
     <button class="tab active" onclick="switchTab(event, 'Haltestellen')">Haltestellen</button>
     <button class="tab" onclick="switchTab(event, 'Linien')">Linien</button>
-    <button class="tab" onclick="switchTab(event, 'Routenplaner')">Routenplaner</button>
+    <button class="tab" onclick="switchTab(event, 'Suche')">Suche</button>
 </div>
 
 <div id="Haltestellen" class="tabcontent current">
@@ -88,7 +88,7 @@
 
 </div>
   
-  <div id="Routenplaner" class="tabcontent">
+  <div id="Suche" class="tabcontent">
     <p>wird entwickelt...</p>
   </div>
 
@@ -138,14 +138,14 @@ function refreshLinien(){
 }
 
 function refresh(){
-    getStopAsync("LoTszTin",["9AB9D810103D8382"]);
-    getStopAsync("TCT", ["FFBEBD7068E01EA4"], ["307","680","681","673"]);
-    getStopAsync("EHCS",["9535298A652873DB"],["606","613"]);
-    getStopAsync("sunway",["633C082A94176ED0"],["307P","678"]);
-    getStopAsync("oppsunway",["75CE4282D2043790"],["606"]);
-    getStopAsync("TaikooPl",["FB4ACCBAB77BE615"]);
-    getStopAsync("EHC",["991E47DBD416B908","D678B3364437D16B"],["307","680","681","307P","673","678"]);
-    getStopAsync("TCTN",["9274EF6791CA3ED8"],["74B","74D","274X","74X","75X","307","307P"]);
+    getStopAsyncSorted("LoTszTin",["9AB9D810103D8382"]);
+    getStopAsyncSorted("TCT", ["FFBEBD7068E01EA4"], ["307","680","681","673"]);
+    getStopAsyncSorted("EHCS",["9535298A652873DB"],["606","613"]);
+    getStopAsyncSorted("sunway",["633C082A94176ED0"],["307P","678"]);
+    getStopAsyncSorted("oppsunway",["75CE4282D2043790"],["606"]);
+    getStopAsyncSorted("TaikooPl",["FB4ACCBAB77BE615"]);
+    getStopAsyncSorted("EHC",["991E47DBD416B908","D678B3364437D16B"],["307","680","681","307P","673","678"]);
+    getStopAsyncSorted("TCTN",["9274EF6791CA3ED8"],["74B","74D","274X","74X","75X","307","307P"]);
     refreshLinien();
 }
 
