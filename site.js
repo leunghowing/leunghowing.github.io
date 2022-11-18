@@ -112,13 +112,13 @@ function getStop(stopids,routes){
 function getStopAsync(element, stopids, routes){
     var unsorted = [];
     var response = "";
+    var j = 1;
     for(var k=0; k < stopids.length; k++){
         $.ajax({
             type: 'GET',
             url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/'+ stopids[k],
             dataType: 'json',
             success: function(data){
-                let j = 1;
                 for(var i = 0; i < data['data'].length; i++ ){ 
                     if(data['data'][i]['eta']!=null){
                         if(routes){
