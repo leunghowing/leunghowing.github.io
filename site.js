@@ -73,7 +73,7 @@ function getStop(stopids,routes){
     return response;
 }
 
-function getStopAsync(element, stopids, routes){
+/* function getStopAsync(element, stopids, routes){
     var response = "";
     for(var k=0; k < stopids.length; k++){
         $.ajax({
@@ -108,8 +108,8 @@ function getStopAsync(element, stopids, routes){
     }
 
 }
-
-function getStopAsyncSorted(element, stopids, routes){
+*/
+function getStopAsync(element, stopids, routes){
     var unsorted = [];
     var response = "";
     for(var k=0; k < stopids.length; k++){
