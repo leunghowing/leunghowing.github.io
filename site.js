@@ -21,7 +21,16 @@ function addRoute(resp, data, number){
 function addUpRoutes(data){
     var resp = "";
     for(let i=0; i < data.length; i++){
-        resp = resp + "<tr><td>" + data[i]['route'] + "</td><td>"+ data[i]['eta'].substring(11,16) + "</td><td><span class='ziel'>" +  data[i]['dest_tc'] + "</span></td>";
+        if(data[i]['co']== 'KMB'){
+            resp = resp + "<tr><td>" + data[i]['route'] + "</td>";
+        }
+        else if(data[i]['co']== 'CTB'){
+            resp = resp + "<tr><td style='border-left-color:yellow;'>" + data[i]['route'] + "</td>";
+        }
+        else {
+            resp = resp + "<tr><td style='border-left-color:white;'>" + data[i]['route'] + "</td>";
+        }
+        resp = resp + "<td>"+ data[i]['eta'].substring(11,16) + "</td><td><span class='ziel'>" +  data[i]['dest_tc'] + "</span></td>";
         var diff =(new Date(Date.parse(data[i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
         diff /= 60;
         if( diff < 1 ){
@@ -167,6 +176,132 @@ function getStopAsync(element, stopids, routes){
 
 }
 
+//TODO
+function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ctbroutes, nwftstopids, nwfbroutes){
+    var unsorted = [];
+    var response = "";
+    var j = 1;
+    if(kmbstopids){
+        for(var k=0; k < kmbstopids.length; k++){
+            $.ajax({
+                type: 'GET',
+                url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/'+ kmbstopids[k],
+                dataType: 'json',
+                success: function(data){
+                    for(var i = 0; i < data['data'].length; i++ ){ 
+                        if(data['data'][i]['eta']!=null){
+                            if(kmbroutes){
+                                    if(kmbroutes.includes(data['data'][i]['route'])){
+                                        let repeated = 0;
+                                        for(let l=0; l < unsorted.length; l ++){
+                                            if(unsorted[l]['route'] == data['data'][i]['route'] && unsorted[l]['eta'] == data['data'][i]['eta'] && unsorted[l]['eta_seq'] == data['data'][i]['eta_seq']){
+                                                repeated = 1;
+                                            }
+                                        }
+                                        if(!repeated){
+                                            unsorted[j-1] = data['data'][i]; 
+                                            j++;
+                                        }
+                                        
+                                    }
+                            }
+                            else{
+                                let repeated = 0;
+                                for(let l=0; l < unsorted.length; l ++){
+                                    if(unsorted[l]['route'] == data['data'][i]['route'] && unsorted[l]['eta'] == data['data'][i]['eta'] && unsorted[l]['eta_seq'] == data['data'][i]['eta_seq']){
+                                        repeated = 1;
+                                    }
+                                }
+                                if(!repeated){
+                                    unsorted[j-1] = data['data'][i]; 
+                                    j++;
+                                }
+                            }
+                        }
+                    }
+                    if(ctbstopids){
+                        addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); //ctbstopids is an array and ctbroutes is a 2D array
+                    }
+                    if(nwftstopids){
+                        addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
+                    }
+
+                    //addBravo();
+                    unsorted.sort(function (a, b) {
+                        return a.eta.localeCompare(b.eta);
+                    });
+                    response = addUpRoutes(unsorted);
+                    if(response == ""){
+                        document.getElementById(element).innerHTML = "Keine Daten";
+                    }
+                    else{
+                        document.getElementById(element).innerHTML = tablehead + response + "</table>";
+                    }
+                    
+                }
+            });
+        }
+    }
+    else{
+        if(ctbstopids){
+            addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes); 
+        }
+        if(nwftstopids){
+            addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes);
+        }
+    }
+
+
+}
+
+//TODO
+function addBravoToStop(unsorted, company, stopids, routes, element){
+    //001986
+    if(unsorted==null){
+        unsorted = [];
+    }
+    for(let i=0; i < stopids.length; i++){
+        for(let j=0; j < routes.length; j++){
+            $.ajax({
+                type: 'GET',
+                url:'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopids[i] + '/' + routes[j],
+                dataType: 'json',
+                success: function(data){
+                    //console.log(data['data'].length);
+                    //console.log('https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopids[i] + '/' + routes[j]);
+                    for(let k = 0; k < data['data'].length; k++ ){
+                        //console.log( data['data'][i]['eta']);
+                        if(data['data'][k]['eta']!=""){
+                            if(routes.includes(data['data'][k]['route'])){
+                                let repeated = 0;
+                                for(let l=0; l < unsorted.length; l ++){
+                                    if(unsorted[l]['route'] == data['data'][k]['route'] && unsorted[l]['eta'] == data['data'][k]['eta'] && unsorted[l]['eta_seq'] == data['data'][k]['eta_seq']){
+                                        repeated = 1;
+                                    }
+                                }
+                                if(!repeated){
+                                    unsorted[unsorted.length] = data['data'][k]; 
+                                }
+                            }
+                        }
+                    }
+                    unsorted.sort(function (a, b) {
+                        return a.eta.localeCompare(b.eta);
+                    });
+                    response = addUpRoutes(unsorted);
+                    if(response == ""){
+                        document.getElementById(element).innerHTML = "Keine Daten";
+                    }
+                    else{
+                        document.getElementById(element).innerHTML = tablehead + response + "</table>";
+                    }
+                }
+
+            });
+        }
+    }
+}
+
 
 function getSingleRouteStopsAsync(route, bound, seq, stopnames){
     var response = [];
@@ -186,7 +321,8 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
                     }
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                     diff /= 60;
-                    if( diff < 0){
+                    if(diff < 0){
+                        response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                     }
                     else if( diff < 1 ){
                         response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
@@ -204,6 +340,80 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
                 document.getElementById(stopnames[d]).innerHTML = response[d];
             }
             
+            //console.log(response);
+        }
+    });
+}
+
+
+function getSingleRouteStopsBravo(company, stopids, route, stopnames){
+    for(let i = 0; i < stopids.length; i ++){
+        getSingleRouteSingleStopBravo(company, stopids[i], route, stopnames[i]);
+    }
+}
+
+function getSingleRouteSingleStopBravo(company, stopid, route, stopname){
+    var response = "";
+    $.ajax({
+        type: 'GET',
+        url:'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopid + '/' + route,
+        dataType: 'json',
+        success: function(data){
+            let j = 0;
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(response==null){
+                    response = ""; 
+                }
+                if(response!=""){
+                    response += "<br>";
+                }
+                var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                diff /= 60;
+                if( diff < 0){
+                }
+                else if( diff < 1 ){
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                }
+                else{
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                }
+                
+            }
+            document.getElementById(stopname).innerHTML = response;
+            //console.log(response);
+        }
+    });
+}
+
+//TODO
+function addBravoUnsorted(company, stopid, route, unsorted){
+    var response = "";
+    $.ajax({
+        type: 'GET',
+        url:'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopid + '/' + route,
+        dataType: 'json',
+        success: function(data){
+            let j = 0;
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(response==null){
+                    response = ""; 
+                }
+                if(response!=""){
+                    response += "<br>";
+                }
+                var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                diff /= 60;
+                if( diff < 0){
+                }
+                else if( diff < 1 ){
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                }
+                else{
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                }
+                
+            }
+            document.getElementById(stopname).innerHTML = response;
             //console.log(response);
         }
     });
