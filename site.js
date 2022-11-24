@@ -219,24 +219,33 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                             }
                         }
                     }
-                    if(ctbstopids){
-                        addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); //ctbstopids is an array and ctbroutes is a 2D array
-                    }
-                    if(nwftstopids){
-                        addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
-                    }
-
-                    //addBravo();
-                    unsorted.sort(function (a, b) {
-                        return a.eta.localeCompare(b.eta);
-                    });
-                    response = addUpRoutes(unsorted);
-                    if(response == ""){
-                        document.getElementById(element).innerHTML = "Keine Daten";
+                    if(ctbstopids || nwftstopids){
+                        if(ctbstopids){ //ctbstopids is an array and ctbroutes is a 2D array
+                            if(nwfbroutes){
+                                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element, 1); 
+                            }
+                            else{
+                                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
+                            }
+                        }
+                        if(nwftstopids){
+                            addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
+                        }
                     }
                     else{
-                        document.getElementById(element).innerHTML = tablehead + response + "</table>";
+                        unsorted.sort(function (a, b) {
+                            return a.eta.localeCompare(b.eta);
+                        });
+                        response = addUpRoutes(unsorted);
+                        if(response == ""){
+                            document.getElementById(element).innerHTML = "Keine Daten";
+                        }
+                        else{
+                            document.getElementById(element).innerHTML = tablehead + response + "</table>";
+                        }
                     }
+                    //addBravo();
+                   
                     
                 }
             });
@@ -244,10 +253,15 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
     }
     else{
         if(ctbstopids){
-            addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes); 
+            if(nwfbroutes){
+                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element, 1); 
+            }
+            else{
+                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
+            }
         }
         if(nwftstopids){
-            addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes);
+            addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
         }
     }
 
@@ -255,7 +269,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
 }
 
 //TODO
-function addBravoToStop(unsorted, company, stopids, routes, element){
+function addBravoToStop(unsorted, company, stopids, routes, element, doNotRefresh){
     //001986
     if(unsorted==null){
         unsorted = [];
@@ -285,15 +299,18 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
                             }
                         }
                     }
-                    unsorted.sort(function (a, b) {
-                        return a.eta.localeCompare(b.eta);
-                    });
-                    response = addUpRoutes(unsorted);
-                    if(response == ""){
-                        document.getElementById(element).innerHTML = "Keine Daten";
-                    }
-                    else{
-                        document.getElementById(element).innerHTML = tablehead + response + "</table>";
+                    if(doNotRefresh == null){
+                        //console.log("refresh");
+                        unsorted.sort(function (a, b) {
+                            return a.eta.localeCompare(b.eta);
+                        });
+                        response = addUpRoutes(unsorted);
+                        if(response == ""){
+                            document.getElementById(element).innerHTML = "Keine Daten";
+                        }
+                        else{
+                            document.getElementById(element).innerHTML = tablehead + response + "</table>";
+                        }
                     }
                 }
 
@@ -321,7 +338,7 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
                     }
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                     diff /= 60;
-                    if(diff < 0){
+                    if(diff < -0.5){
                         response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                     }
                     else if( diff < 1 ){
@@ -369,7 +386,9 @@ function getSingleRouteSingleStopBravo(company, stopid, route, stopname){
                 }
                 var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                 diff /= 60;
-                if( diff < 0){
+                if( diff < -0.5){
+                    response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+
                 }
                 else if( diff < 1 ){
                     response = response + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
