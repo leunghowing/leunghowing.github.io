@@ -221,12 +221,8 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                     }
                     if(ctbstopids || nwftstopids){
                         if(ctbstopids){ //ctbstopids is an array and ctbroutes is a 2D array
-                            if(nwfbroutes){
-                                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
-                            }
-                            else{
-                                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
-                            }
+                            addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
+                
                         }
                         if(nwftstopids){
                             addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
@@ -253,12 +249,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
     }
     else{
         if(ctbstopids){
-            if(nwfbroutes){
-                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
-            }
-            else{
-                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
-            }
+            addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
         }
         if(nwftstopids){
             addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
@@ -299,18 +290,16 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
                             }
                         }
                     }
-                    if(j == routes.length -1){
-                        //console.log("refresh");
-                        unsorted.sort(function (a, b) {
-                            return a.eta.localeCompare(b.eta);
-                        });
-                        response = addUpRoutes(unsorted);
-                        if(response == ""){
-                            document.getElementById(element).innerHTML = "Keine Daten";
-                        }
-                        else{
-                            document.getElementById(element).innerHTML = tablehead + response + "</table>";
-                        }
+                    //console.log("refresh");
+                    unsorted.sort(function (a, b) {
+                        return a.eta.localeCompare(b.eta);
+                    });
+                    response = addUpRoutes(unsorted);
+                    if(response == ""){
+                        document.getElementById(element).innerHTML = "Keine Daten";
+                    }
+                    else{
+                        document.getElementById(element).innerHTML = tablehead + response + "</table>";
                     }
                 }
 
