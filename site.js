@@ -222,7 +222,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                     if(ctbstopids || nwftstopids){
                         if(ctbstopids){ //ctbstopids is an array and ctbroutes is a 2D array
                             if(nwfbroutes){
-                                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element, 1); 
+                                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
                             }
                             else{
                                 addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
@@ -254,7 +254,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
     else{
         if(ctbstopids){
             if(nwfbroutes){
-                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element, 1); 
+                addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
             }
             else{
                 addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
@@ -269,7 +269,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
 }
 
 //TODO
-function addBravoToStop(unsorted, company, stopids, routes, element, doNotRefresh){
+function addBravoToStop(unsorted, company, stopids, routes, element){
     //001986
     if(unsorted==null){
         unsorted = [];
@@ -299,7 +299,7 @@ function addBravoToStop(unsorted, company, stopids, routes, element, doNotRefres
                             }
                         }
                     }
-                    if(doNotRefresh == null){
+                    if(j == routes.length -1){
                         //console.log("refresh");
                         unsorted.sort(function (a, b) {
                             return a.eta.localeCompare(b.eta);
