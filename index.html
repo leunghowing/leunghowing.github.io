@@ -90,6 +90,8 @@
   
   <div id="Suche" class="tabcontent">
     <p>wird entwickelt...</p>
+    <input id="myInput" type="text" placeholder="Suche...">
+    <ul id="srchResults"></ul>
   </div>
 
 
@@ -139,7 +141,7 @@ function refreshLinien(){
 
 function refresh(){
     getStopAsync("LoTszTin",["9AB9D810103D8382"]);
-    getStopAsyncAllOperators("TCT", ["FFBEBD7068E01EA4"], ["307","680","681","673"], ['001986'] , ["307","681"], ["001986"], ["682"]);
+    getStopAsyncAllOperators("TCT", ["FFBEBD7068E01EA4"], ["307","680","681","673"], ['001986'] , ["307","681"], ["001986"], ["682", "682B"]);
     getStopAsyncAllOperators("EHCS",["9535298A652873DB"],["606","613"], ['001463'], ['608','606'], ['001463'], ['682','682B']);
     getStopAsync("sunway",["633C082A94176ED0"],["307P","678"]);
     getStopAsync("oppsunway",["75CE4282D2043790"],["606"]);
@@ -166,6 +168,13 @@ function switchTab(evt, tabname) {
   },1);
   evt.currentTarget.className += " active";
 }
+
+$(document).ready(function(){
+    $('#myInput').keyup(function(){
+        $('#srchResults').html("");
+        var searchterm = $('#myInput').val();
+    });
+});
 
 
 </script>
