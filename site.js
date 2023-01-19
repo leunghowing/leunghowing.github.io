@@ -426,3 +426,78 @@ function addBravoUnsorted(company, stopid, route, unsorted){
         }
     });
 }
+
+function jQueryRoutes(searchterm){
+    $.ajax({
+        type: 'GET',
+        url: 'https://data.etabus.gov.hk/v1/transport/kmb/route/',
+        dataType: 'json',
+        success: function(data){
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['route'].includes(searchterm)){
+                    let appending = "";
+                    appending = "data-route='" + data['data'][i]['route'] + "' data-bound='" + data['data'][i]['bound'] + "' data-service-type='" + data['data'][i]['service_type'] + "'";
+                    $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + "</td><tr>" );
+                }
+            }
+        }
+    });
+
+}
+
+function checkThisRoute(theRoute){
+    let hiRoute = theRoute.getAttribute("data-route");
+    let hiBound = theRoute.getAttribute("data-bound");
+    let hiServiceType = theRoute.getAttribute("data-service-type");
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+    //console.log("Hiroute: " + hiRoute);
+    getSearchRouteStops(hiRoute, hiBound, hiServiceType);
+}
+
+function removePopup(){
+    var popup = document.getElementById("myPopup");
+    popup.classList.remove("show");
+
+}
+
+function getSearchRouteStops(route, bound, service_type){
+    var response = [];
+    $.ajax({
+        type: 'GET',
+        url:'https://data.etabus.gov.hk/v1/transport/kmb/route-eta/'+ route + "/" + service_type,
+        dataType: 'json',
+        success: function(data){
+            j=0;
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['dir'] == bound){
+                    if(response[j]==null){
+                        response[j] = ""; 
+                    }
+                    if(response[j]!=""){
+                        response[j] += "<br>";
+                    }
+                    var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                    diff /= 60;
+                    if(diff < -0.5){
+                        response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                    }
+                    else if( diff < 1 ){
+                        response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                    }
+                    else{
+                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                    }
+                    if(i< data['data'].length -1 && data['data'][i+1]['eta-seq']==1){
+                        j++;
+                    }
+                }
+            }
+            for(let d = 0; d < response.length; d++){
+                console.log(response[d]);
+            }
+            
+            //console.log(response);
+        }
+    });
+}
