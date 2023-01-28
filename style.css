@@ -132,7 +132,7 @@ body {
   border-color: white;
 }
 .srchdiv {
-  max-height: 60vw;
+  max-height: 75vh;
   overflow-y: auto;
   scrollbar-width: none;
 }
@@ -160,7 +160,7 @@ body {
   visibility: hidden;
   position: absolute;
   width: 90vw;
-  height: 10vw;
+  height: 90vh;
   transform: -5vw;
   background-color: #111111;
   border-radius: 10px;
@@ -186,5 +186,12 @@ body {
 
 #fertig {
   text-align: right;
-  padding: 1em;
+  padding: 0.5em 1em 0;
+}
+
+#popupETA {
+  padding:1em;
+  overflow-y: scroll;
+  position: relative;
+  height: 80%;
 }

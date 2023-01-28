@@ -458,46 +458,94 @@ function checkThisRoute(theRoute){
 function removePopup(){
     var popup = document.getElementById("myPopup");
     popup.classList.remove("show");
+    $('#popupETA').html("Lädt");
 
 }
 
 function getSearchRouteStops(route, bound, service_type){
+    var response = "";
+    $.ajax({
+        type: 'GET',
+        url:'https://data.etabus.gov.hk/v1/transport/kmb/route-stop/'+ route + "/" + (bound=='I'? "inbound" : "outbound") + "/" + service_type,
+        dataType: 'json',
+        success: function(data){
+            response = "<table id='Hahatable'>";
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                response = response + getStopName(data['data'][i]['stop']);
+            }
+            response = response + "</table>";
+            $('#popupETA').html(response);
+
+            var etaData = getETAdata(route,bound,service_type);
+            console.log(etaData);
+            var tt = document.getElementById("Hahatable");
+            var j = 0;
+            for(var i = 1; i < tt.rows.length; i +=2){
+                if(etaData[j]!= null && etaData[j]!= ''){
+                    var ttt = tt.getElementsByTagName("td")[i];
+                    ttt.innerHTML= etaData[j];
+                }
+                j++;
+            }            
+        }
+
+    });
+}
+
+function getStopName(stopid){
+    var response = "";
+    $.ajax({
+        type: 'GET',
+        url:'https://data.etabus.gov.hk/v1/transport/kmb/stop/'+ stopid,
+        dataType: 'json',
+        async: false,
+        success: function(data){
+            response = "<tr><td>" + data['data']['name_tc'] + "</td></tr><tr style='height:30px;'><td>--:--</td></tr>";
+            return response;
+        }
+    });
+    return response;
+
+}
+
+function getETAdata(route, bound, service_type){
     var response = [];
     $.ajax({
         type: 'GET',
         url:'https://data.etabus.gov.hk/v1/transport/kmb/route-eta/'+ route + "/" + service_type,
         dataType: 'json',
+        async:false,
         success: function(data){
             j=0;
             for(var i = 0; i < data['data'].length; i++ ){ 
-                if(data['data'][i]['dir'] == bound){
+                if(data['data'][i]['dir'] == bound ){
                     if(response[j]==null){
                         response[j] = ""; 
                     }
                     if(response[j]!=""){
-                        response[j] += "<br>";
+                        response[j] += "\t";
                     }
-                    var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
-                    diff /= 60;
-                    if(diff < -0.5){
-                        response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                    if(data['data'][i]['eta']!= null){
+                        var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                        diff /= 60;
+                        if(diff < -0.5){
+                            response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                        }
+                        else if( diff < 1 ){
+                            response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                        }
+                        else{
+                            response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                        }
                     }
-                    else if( diff < 1 ){
-                        response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
-                    }
-                    else{
-                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
-                    }
-                    if(i< data['data'].length -1 && data['data'][i+1]['eta-seq']==1){
+                    if(i < (data['data'].length -1) && data['data'][i+1]['eta_seq']==1){
                         j++;
                     }
                 }
             }
-            for(let d = 0; d < response.length; d++){
-                console.log(response[d]);
-            }
-            
-            //console.log(response);
+            return response;
         }
     });
+    return response;
+
 }
