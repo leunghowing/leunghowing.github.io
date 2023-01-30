@@ -470,41 +470,32 @@ function getSearchRouteStops(route, bound, service_type){
         dataType: 'json',
         success: function(data){
             response = "<table id='Hahatable'>";
-            for(var i = 0; i < data['data'].length; i++ ){ 
-                response = response + getStopName(data['data'][i]['stop']);
+            for(var i = 0; i < data['data'].length; i++ ){
+                response = response + "<tr><td>Lädt...</td></tr><tr style='height:30px;'><td>--:--</td></tr>";
             }
             response = response + "</table>";
             $('#popupETA').html(response);
-
-            var etaData = getETAdata(route,bound,service_type);
-            console.log(etaData);
-            var tt = document.getElementById("Hahatable");
-            var j = 0;
-            for(var i = 1; i < tt.rows.length; i +=2){
-                if(etaData[j]!= null && etaData[j]!= ''){
-                    var ttt = tt.getElementsByTagName("td")[i];
-                    ttt.innerHTML= etaData[j];
-                }
-                j++;
-            }            
+            for(var i = 0; i < data['data'].length; i++ ){
+                getStopName(data['data'][i]['stop'],i);
+            }
+            getETAdata(route,bound,service_type); 
         }
 
     });
 }
 
-function getStopName(stopid){
+function getStopName(stopid,stopseq){
     var response = "";
     $.ajax({
         type: 'GET',
         url:'https://data.etabus.gov.hk/v1/transport/kmb/stop/'+ stopid,
         dataType: 'json',
-        async: false,
         success: function(data){
-            response = "<tr><td>" + data['data']['name_tc'] + "</td></tr><tr style='height:30px;'><td>--:--</td></tr>";
-            return response;
+            var tt = document.getElementById("Hahatable");
+            var ttt = tt.getElementsByTagName("td")[stopseq*2];
+            ttt.innerHTML = data['data']['name_tc'];
         }
     });
-    return response;
 
 }
 
@@ -543,9 +534,16 @@ function getETAdata(route, bound, service_type){
                     }
                 }
             }
-            return response;
+            var tt = document.getElementById("Hahatable");
+            var j = 0;
+            for(var i = 1; i < tt.rows.length; i +=2){
+                if(response[j]!= null && response[j]!= ''){
+                    var ttt = tt.getElementsByTagName("td")[i];
+                    ttt.innerHTML= response[j];
+                }
+                j++;
+            }
         }
     });
-    return response;
 
 }
