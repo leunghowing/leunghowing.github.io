@@ -1,4 +1,5 @@
 var datetimenow = "";
+var getAgain;
 
 function addRoute(resp, data, number){
     resp = resp + "<tr><td>" + data['data'][number]['route'] + "</td><td>"+ data['data'][number]['eta'].substring(11,16) + "</td><td><span class='ziel'>" +  data['data'][number]['dest_tc'] + "</span></td>";
@@ -463,6 +464,7 @@ function removePopup(){
     var hihihi = document.getElementById("Hihihi");
     hihihi.classList.toggle("hidden");
     $('#popupETA').html("Lädt...");
+    clearInterval(getAgain);
 }
 
 function getSearchRouteStops(route, bound, service_type){
@@ -482,7 +484,7 @@ function getSearchRouteStops(route, bound, service_type){
                 getStopName(data['data'][i]['stop'],i);
             }
             getETAdata(route,bound,service_type);
-            setInterval(function() { getETAdata(route,bound,service_type);},10000);
+            getAgain = setInterval(function() { getETAdata(route,bound,service_type);},10000);
             
         }
 
