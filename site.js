@@ -437,7 +437,7 @@ function jQueryRoutes(searchterm){
                 if(data['data'][i]['route'].includes(searchterm)){
                     let appending = "";
                     appending = "data-route='" + data['data'][i]['route'] + "' data-bound='" + data['data'][i]['bound'] + "' data-service-type='" + data['data'][i]['service_type'] + "'";
-                    $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + "</td><tr>" );
+                    $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + (data['data'][i]['service_type'] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data['data'][i]['service_type'] - 1) +"</span>") + "</td><tr>" );
                 }
             }
         }
