@@ -451,15 +451,18 @@ function checkThisRoute(theRoute){
     let hiServiceType = theRoute.getAttribute("data-service-type");
     var popup = document.getElementById("myPopup");
     popup.classList.toggle("show");
+    var hihihi = document.getElementById("Hihihi");
+    hihihi.classList.toggle("hidden");
     //console.log("Hiroute: " + hiRoute);
     getSearchRouteStops(hiRoute, hiBound, hiServiceType);
 }
 
 function removePopup(){
     var popup = document.getElementById("myPopup");
-    popup.classList.remove("show");
-    $('#popupETA').html("Lädt");
-
+    popup.classList.toggle("show");
+    var hihihi = document.getElementById("Hihihi");
+    hihihi.classList.toggle("hidden");
+    $('#popupETA').html("Lädt...");
 }
 
 function getSearchRouteStops(route, bound, service_type){
@@ -471,14 +474,16 @@ function getSearchRouteStops(route, bound, service_type){
         success: function(data){
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + "<tr><td>Lädt...</td></tr><tr style='height:30px;'><td>--:--</td></tr>";
+                response = response + "<tr><td>Lädt...</td></tr><tr style='height:30px; font-size:12px'><td>--:--</td></tr>";
             }
             response = response + "</table>";
             $('#popupETA').html(response);
             for(var i = 0; i < data['data'].length; i++ ){
                 getStopName(data['data'][i]['stop'],i);
             }
-            getETAdata(route,bound,service_type); 
+            getETAdata(route,bound,service_type);
+            setInterval(function() { getETAdata(route,bound,service_type);},10000);
+            
         }
 
     });
@@ -507,6 +512,7 @@ function getETAdata(route, bound, service_type){
         dataType: 'json',
         async:false,
         success: function(data){
+            console.log("Hihi");
             j=0;
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['dir'] == bound ){

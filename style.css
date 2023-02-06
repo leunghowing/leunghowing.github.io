@@ -152,15 +152,15 @@ body {
 }
 
 .popupContainer {
-  position: relative;
   overflow: hidden;
+  height: 80vh;
 }
 
 .popupContainer .popupText {
   visibility: hidden;
   position: absolute;
   width: 90vw;
-  height: 90vh;
+  height: 80vh;
   transform: -5vw;
   background-color: #111111;
   border-radius: 10px;
@@ -172,6 +172,10 @@ body {
   visibility: visible;
   -webkit-animation: fadeIn 0.5s;
   animation: fadeIn 0.5s;
+}
+
+.popupContainer .hidden {
+  visibility: hidden;
 }
 
 @-webkit-keyframes fadeIn {
