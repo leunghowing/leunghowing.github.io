@@ -125,8 +125,9 @@ body {
 }
 
 #myInput {
-  width:20em;
-  height: 30px;
+  width:15em;
+  height: 35px;
+  font-size: 20px;
   background-color: black;
   color: white;
   border-color: white;
@@ -145,10 +146,11 @@ body {
 }
 
 #srchResults td:first-child{
-  min-width: 4em;
+  min-width: 5em;
 }
 #srchResults td:last-child{
-  min-width: 13em;
+  min-width: 14em;
+  max-width: 14em;
 }
 
 .popupContainer {
