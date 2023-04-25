@@ -450,11 +450,13 @@ function jQueryRoutes(searchterm){
 function jQueryRoutesAllOp(searchterm){
     var listOfMatches = []; //[route, dest, oper, bound, service-type (kmb) ]
     let jj=0;
+    var loaded = 0; 
     $.ajax({
         type: 'GET',
         url: 'https://data.etabus.gov.hk/v1/transport/kmb/route/',
         dataType: 'json',
         success: function(data){
+            loaded++;
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
                     listOfMatches[jj] = [data['data'][i]['route'],  data['data'][i]['dest_tc'], "kmb", data['data'][i]['bound'], data['data'][i]['service_type']]; 
@@ -471,12 +473,15 @@ function jQueryRoutesAllOp(searchterm){
                         }
                     });
                     //console.log(listOfMatches);
-                    generateResults(listOfMatches);
+                    
                     //let appending = "";
                     //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='" + data['data'][i]['bound'] + "' data-op='kmb'" + "' data-service-type='" + data['data'][i]['service_type'] + "'";
                     //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + (data['data'][i]['service_type'] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data['data'][i]['service_type'] - 1) +"</span>") + "</td><tr>" );
                 }
             }
+            if(loaded == 3){
+                generateResults(listOfMatches);
+            } 
         }
     });
     $.ajax({
@@ -484,6 +489,7 @@ function jQueryRoutesAllOp(searchterm){
         url: 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/route/nwfb',
         dataType: 'json',
         success: function(data){
+            loaded++;
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
                     listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['dest_tc'], "nwfb", "outbound", ""];
@@ -502,7 +508,7 @@ function jQueryRoutesAllOp(searchterm){
                         }
                     });
                     //console.log(listOfMatches);
-                    generateResults(listOfMatches);
+                    
                     //let appending = "";
                     //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='outbound' data-op='nwfb'";
                     //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid white;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + "</td><tr>" );
@@ -511,6 +517,9 @@ function jQueryRoutesAllOp(searchterm){
                
                 }
             }
+            if(loaded == 3){
+                generateResults(listOfMatches);
+            } 
         }
     });
     $.ajax({
@@ -518,6 +527,7 @@ function jQueryRoutesAllOp(searchterm){
         url: 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/route/ctb',
         dataType: 'json',
         success: function(data){
+            loaded++;
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
                     listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['dest_tc'], "ctb", "outbound", ""];
@@ -536,7 +546,7 @@ function jQueryRoutesAllOp(searchterm){
                         }
                     });
                     //console.log(listOfMatches);
-                    generateResults(listOfMatches);
+                    
                     //let appending = "";
                     //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='outbound' data-op='ctb'";
                     //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid white;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + "</td><tr>" );
@@ -544,6 +554,9 @@ function jQueryRoutesAllOp(searchterm){
                     //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid white;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['orig_tc'] + "</td><tr>" );
                 }
             }
+            if(loaded == 3){
+                generateResults(listOfMatches);
+            } 
         }
     });
 
