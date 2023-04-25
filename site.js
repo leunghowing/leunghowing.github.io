@@ -332,7 +332,7 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
                         response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                     }
                     else if( diff < 1 ){
-                        response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                        response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
                     }
                     else{
                         response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
@@ -381,7 +381,7 @@ function getSingleRouteSingleStopBravo(company, stopid, route, stopname){
 
                 }
                 else if( diff < 1 ){
-                    response = response + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                    response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
                 }
                 else{
                     response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
@@ -446,16 +446,144 @@ function jQueryRoutes(searchterm){
 
 }
 
+
+function jQueryRoutesAllOp(searchterm){
+    var listOfMatches = []; //[route, dest, oper, bound, service-type (kmb) ]
+    let jj=0;
+    $.ajax({
+        type: 'GET',
+        url: 'https://data.etabus.gov.hk/v1/transport/kmb/route/',
+        dataType: 'json',
+        success: function(data){
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
+                    listOfMatches[jj] = [data['data'][i]['route'],  data['data'][i]['dest_tc'], "kmb", data['data'][i]['bound'], data['data'][i]['service_type']]; 
+                    jj++;
+                    listOfMatches.sort(function(a, b) {
+                        var aNumber = parseInt(a[0]);
+                        var bNumber = parseInt(b[0]);
+                        var aSuffix = a[0].substring(aNumber.toString().length);
+                        var bSuffix = b[0].substring(bNumber.toString().length);
+                        if (aNumber === bNumber) {
+                          return aSuffix.localeCompare(bSuffix);
+                        } else {
+                          return aNumber - bNumber;
+                        }
+                    });
+                    //console.log(listOfMatches);
+                    generateResults(listOfMatches);
+                    //let appending = "";
+                    //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='" + data['data'][i]['bound'] + "' data-op='kmb'" + "' data-service-type='" + data['data'][i]['service_type'] + "'";
+                    //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + (data['data'][i]['service_type'] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data['data'][i]['service_type'] - 1) +"</span>") + "</td><tr>" );
+                }
+            }
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/route/nwfb',
+        dataType: 'json',
+        success: function(data){
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
+                    listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['dest_tc'], "nwfb", "outbound", ""];
+                    jj++;
+                    listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "nwfb", "inbound", ""];
+                    jj++;
+                    listOfMatches.sort(function(a, b) {
+                        var aNumber = parseInt(a[0]);
+                        var bNumber = parseInt(b[0]);
+                        var aSuffix = a[0].substring(aNumber.toString().length);
+                        var bSuffix = b[0].substring(bNumber.toString().length);
+                        if (aNumber === bNumber) {
+                          return aSuffix.localeCompare(bSuffix);
+                        } else {
+                          return aNumber - bNumber;
+                        }
+                    });
+                    //console.log(listOfMatches);
+                    generateResults(listOfMatches);
+                    //let appending = "";
+                    //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='outbound' data-op='nwfb'";
+                    //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid white;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + "</td><tr>" );
+                    //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='inbound' data-op='nwfb'";
+                    //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid white;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['orig_tc'] + "</td><tr>" );
+               
+                }
+            }
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/route/ctb',
+        dataType: 'json',
+        success: function(data){
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
+                    listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['dest_tc'], "ctb", "outbound", ""];
+                    jj++;
+                    listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "ctb", "inbound", ""];
+                    jj++;
+                    listOfMatches.sort(function(a, b) {
+                        var aNumber = parseInt(a[0]);
+                        var bNumber = parseInt(b[0]);
+                        var aSuffix = a[0].substring(aNumber.toString().length);
+                        var bSuffix = b[0].substring(bNumber.toString().length);
+                        if (aNumber === bNumber) {
+                          return aSuffix.localeCompare(bSuffix);
+                        } else {
+                          return aNumber - bNumber;
+                        }
+                    });
+                    //console.log(listOfMatches);
+                    generateResults(listOfMatches);
+                    //let appending = "";
+                    //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='outbound' data-op='ctb'";
+                    //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid white;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['dest_tc'] + "</td><tr>" );
+                    //appending = "data-route='" + data['data'][i]['route'] + "' data-bound='inbound' data-op='ctb'";
+                    //$('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid white;'>" + data['data'][i]['route'] + "</td><td>" +  data['data'][i]['orig_tc'] + "</td><tr>" );
+                }
+            }
+        }
+    });
+
+}
+
+function generateResults(data){
+    //[route, dest, oper, bound, service-type (kmb)]
+    let appending = "";
+    $('#srchResults').html("");
+    for(let i=0;i<data.length;i++){
+        if(data[i][2]=="kmb"){
+            appending = "data-route='" + data[i][0] + "' data-bound='" + data[i][3] + "' data-op='kmb'" + "' data-service-type='" + data[i][4] + "'";
+            $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data[i][4] - 1) +"</span>") + "</td><tr>" );
+        }
+        else if(data[i][2]=="ctb" || data[i][2]=="nwfb"){
+            appending = "data-route='" + data[i][0] + "' data-bound='"+ data[i][3]+"' data-op='"+ data[i][2] +"'";
+            $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid "+(data[i][2]=="ctb"?"yellow":"white")+";'>" + data[i][0] + "</td><td>" +  data[i][1] + "</td><tr>" );
+        }
+    }
+}
+
 function checkThisRoute(theRoute){
     let hiRoute = theRoute.getAttribute("data-route");
-    let hiBound = theRoute.getAttribute("data-bound");
-    let hiServiceType = theRoute.getAttribute("data-service-type");
+    let hiBound = theRoute.getAttribute("data-bound");;
+    let hiOp = theRoute.getAttribute("data-op");
+    let hiServiceType = "";
+    if(hiOp=='kmb'){
+        hiServiceType = theRoute.getAttribute("data-service-type");   
+    }
     var popup = document.getElementById("myPopup");
     popup.classList.toggle("show");
     var hihihi = document.getElementById("Hihihi");
     hihihi.classList.toggle("hidden");
     //console.log("Hiroute: " + hiRoute);
-    getSearchRouteStops(hiRoute, hiBound, hiServiceType);
+    if(hiOp=='kmb'){
+        getSearchRouteStops(hiRoute, hiBound, hiServiceType);
+    }
+    else{
+        getSearchRouteStopsBravo(hiRoute, hiBound, hiOp);
+    }
 }
 
 function removePopup(){
@@ -481,7 +609,7 @@ function getSearchRouteStops(route, bound, service_type){
             response = response + "</table>";
             $('#popupETA').html(response);
             for(var i = 0; i < data['data'].length; i++ ){
-                getStopName(data['data'][i]['stop'],i);
+                getStopName(data['data'][i]['stop'],i, "kmb");
             }
             getETAdata(route,bound,service_type);
             getAgain = setInterval(function() { getETAdata(route,bound,service_type);},10000);
@@ -491,11 +619,90 @@ function getSearchRouteStops(route, bound, service_type){
     });
 }
 
-function getStopName(stopid,stopseq){
+function getSearchRouteStopsBravo(route, bound, oper){
+    var oneCharBound = "";
+    //console.log(bound);
+    oneCharBound = (bound=="inbound"? "I":"O");
+    $.ajax({
+        type: 'GET',
+        url:`https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/route-stop/${oper}/${route}/${bound}`,
+        dataType: 'json',
+        success: function(data){
+            var data2 =[];
+            //console.log(data);
+            response = "<table id='Hahatable'>";
+            for(var i = 0; i < data['data'].length; i++ ){
+                response = response + "<tr><td>Lädt...</td></tr><tr style='height:30px; font-size:12px'><td>--:--</td></tr>";
+            }
+            response = response + "</table>";
+            $('#popupETA').html(response);
+            for(var i = 0; i < data['data'].length; i++ ){
+                getStopName(data['data'][i]['stop'],i, oper);
+                getStopETABravo(data['data'][i]['stop'],i,route,oneCharBound);
+                data2[i]= data['data'][i]['stop'];
+            }
+            getAgain = setInterval(function() { getStopETAAgain(data2, route, oneCharBound);},10000);
+        }
+    });
+}
+function getStopETABravo(stopid, stopseq, route, bound){
     var response = "";
     $.ajax({
         type: 'GET',
-        url:'https://data.etabus.gov.hk/v1/transport/kmb/stop/'+ stopid,
+        url: `https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/CTB/${stopid}/${route}`,
+        dataType: 'json',
+        success: function(data){
+            //console.log(data);
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                if(response==null){
+                    response = ""; 
+                }
+                if(response!=""){
+                    response += "\t";
+                }
+                if(data['data'][i]['eta']!= null && data['data'][i]['eta']!= "" && data['data'][i]['dir']==(bound)){
+                    var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                    diff /= 60;
+                    if(diff < -0.5){
+                        response = response + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                    }
+                    else if( diff < 1 ){
+                        response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
+                    }
+                    else{
+                        response = response +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                    }
+                }
+            }
+            //console.log(`response of ${stopid},${stopseq}: ${response}`)
+            var tt = document.getElementById("Hahatable");
+            if(response!= null && response!= ''){
+                var tt = document.getElementById("Hahatable");
+                var ttt = tt.getElementsByTagName("td")[stopseq*2+1];
+                ttt.innerHTML = response;
+            }
+        }
+    });
+}
+function getStopETAAgain(data, route,bound){
+    console.log("HiHi, data:" + data);
+    for(var i = 0; i < data.length; i++ ){
+        getStopETABravo(data[i],i,route,bound);
+    }
+}
+
+function getStopName(stopid,stopseq, oper){
+    var response = "";
+    var link = "";
+    if(oper == "kmb"){
+        link = 'https://data.etabus.gov.hk/v1/transport/kmb/stop/';
+    }
+    else if(oper == "ctb" || oper == "nwfb"){
+        link = 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/stop/'
+    }
+    $.ajax({
+        type: 'GET',
+        url: link + stopid,
         dataType: 'json',
         success: function(data){
             var tt = document.getElementById("Hahatable");
@@ -503,7 +710,6 @@ function getStopName(stopid,stopseq){
             ttt.innerHTML = data['data']['name_tc'];
         }
     });
-
 }
 
 function getETAdata(route, bound, service_type){
@@ -514,7 +720,7 @@ function getETAdata(route, bound, service_type){
         dataType: 'json',
         async:false,
         success: function(data){
-            console.log("Hihi");
+            //console.log("Hihi");
             j=0;
             for(var i = 0; i < data['data'].length; i++ ){ 
                 if(data['data'][i]['dir'] == bound ){
@@ -531,7 +737,7 @@ function getETAdata(route, bound, service_type){
                             response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                         }
                         else if( diff < 1 ){
-                            response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                            response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
                         }
                         else{
                             response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
@@ -554,4 +760,36 @@ function getETAdata(route, bound, service_type){
         }
     });
 
+}
+
+
+function checkCookie() {
+    let lang = getCookie("Lang");
+    if (lang == ""){
+        setCookie("Lang", "De", 365);    
+    }
+    
+}
+
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {   
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }

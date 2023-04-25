@@ -12,7 +12,14 @@
 <script src="site.js"></script>
 
 <body onload="init();">
-    
+<div id="setLang" class="hidden-lang">
+    <button type="button" class="langbtn">English</button>
+    <br>
+    <button type="button" class="langbtn">Deutsch</button>
+    <br>
+    <button type="button" class="langbtn">中文</button>
+    <br>
+</div>
 <div id="clock">--:--:--</div>
 <br>
 <div class="tabs">
@@ -121,6 +128,7 @@ const obj = JSON.parse(json);
 var tablehead = "<table><tr><th>Linie</th><th>Zeit</th><th>Ziel</th><th><span style='font-size:12px'>Abfahrt in</span></th></tr>";
 
 function init(){
+    checkCookie();
     var tabcontent;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (let i = 1; i < tabcontent.length; i++) {
@@ -189,7 +197,7 @@ $(document).ready(function(){
         $('#srchResults').html("");
         if($('#myInput').val() != ""){
             var searchterm = $('#myInput').val().toUpperCase();
-            jQueryRoutes(searchterm);
+            jQueryRoutesAllOp(searchterm);
         }
     });
 

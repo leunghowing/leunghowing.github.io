@@ -147,6 +147,7 @@ body {
 
 #srchResults td:first-child{
   min-width: 4.5em;
+  padding-left: 5px;
 }
 #srchResults td:last-child{
   min-width: 14.5em;
@@ -200,4 +201,45 @@ body {
   overflow-y: scroll;
   position: relative;
   height: 80%;
+}
+
+.langbtn {
+  height:40px;
+  width: 200px;
+  background-color: #000000;
+  text-align: center;
+  color: #FFFFFF;
+  border-color: #000000;
+border-radius: 5px;
+}
+
+#setLang {
+  background-color: #111111;
+  width: 300px;
+  border-radius: 10px;
+  padding: 8px 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.blinking {
+  animation: blink-animation 1s steps(5, start) infinite;
+  -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+
+.hidden-lang{
+  visibility: hidden;
 }
