@@ -244,3 +244,27 @@ border-radius: 5px;
   visibility: hidden;
 }
 
+.hidden-load{
+  visibility: hidden;
+  height: 0px!important;
+  margin-top: 0px!important;
+}
+
+.loading {
+  border: 5px solid white;
+  border-top: 5px solid grey;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin-top: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

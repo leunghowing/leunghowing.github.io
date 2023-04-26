@@ -451,6 +451,8 @@ function jQueryRoutesAllOp(searchterm){
     var listOfMatches = []; //[route, dest, oper, bound, service-type (kmb) ]
     let jj=0;
     var loaded = 0; 
+    var loading = document.getElementById("LoadingAh");
+    loading.classList.toggle("hidden-load");
     $.ajax({
         type: 'GET',
         url: 'https://data.etabus.gov.hk/v1/transport/kmb/route/',
@@ -564,6 +566,8 @@ function jQueryRoutesAllOp(searchterm){
 
 function generateResults(data){
     //[route, dest, oper, bound, service-type (kmb)]
+    let loading = document.getElementById("LoadingAh");
+    loading.classList.toggle("hidden-load");
     let appending = "";
     $('#srchResults').html("");
     for(let i=0;i<data.length;i++){
