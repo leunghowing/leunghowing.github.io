@@ -44,7 +44,7 @@ function addUpRoutes(data){
             resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'>  Std.</span></td>";
         }
         //console.log(diff);
-        resp = resp + "</tr>"; 
+        resp = resp + "</tr>";
     }
     return resp;
 }
@@ -782,10 +782,16 @@ function getETAdata(route, bound, service_type){
 
 function checkCookie() {
     let lang = getCookie("Lang");
-    if (lang == ""){
-        setCookie("Lang", "De", 365);    
-    }
-    
+    if (lang == "" || lang == null){
+        var loading = document.getElementById("setLang");
+        loading.classList.toggle("hidden-lang");  
+    }   
+}
+
+function setLang180(lang){
+    var loading = document.getElementById("setLang");
+    loading.classList.toggle("hidden-lang");  
+    setCookie('lang',lang,180);
 }
 
 function setCookie(name,value,days) {
