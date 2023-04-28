@@ -781,7 +781,7 @@ function getETAdata(route, bound, service_type){
 
 
 function checkCookie() {
-    let lang = getCookie("Lang");
+    let lang = getCookie("lang");
     if (lang == "" || lang == null){
         var loading = document.getElementById("setLang");
         loading.classList.toggle("hidden-lang");  
