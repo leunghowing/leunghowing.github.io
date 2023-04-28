@@ -1,5 +1,6 @@
 var datetimenow = "";
 var getAgain;
+var dispLang ="";
 
 function addRoute(resp, data, number){
     resp = resp + "<tr><td>" + data['data'][number]['route'] + "</td><td>"+ data['data'][number]['eta'].substring(11,16) + "</td><td><span class='ziel'>" +  data['data'][number]['dest_tc'] + "</span></td>";
@@ -584,7 +585,7 @@ function generateResults(data){
 
 function checkThisRoute(theRoute){
     let hiRoute = theRoute.getAttribute("data-route");
-    let hiBound = theRoute.getAttribute("data-bound");;
+    let hiBound = theRoute.getAttribute("data-bound");
     let hiOp = theRoute.getAttribute("data-op");
     let hiServiceType = "";
     if(hiOp=='kmb'){
@@ -792,6 +793,7 @@ function setLang180(lang){
     var loading = document.getElementById("setLang");
     loading.classList.toggle("hidden-lang");  
     setCookie('lang',lang,180);
+    location.reload();
 }
 
 function setCookie(name,value,days) {
@@ -816,3 +818,12 @@ function getCookie(name) {
 function eraseCookie(name) {   
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
+
+function displayMessage(element) {
+    if(dispLang == ""){
+        dispLang = getCookie("lang");
+    }
+    const key = element.getAttribute("data-message");
+    const message = messages[`${key}.${lang}`];
+    element.textContent = message;
+  }

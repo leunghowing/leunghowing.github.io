@@ -9,6 +9,7 @@
     <link rel = "stylesheet" href = "style.css">
 </head>
 <script src = "jquery-3.6.1.min.js">  </script>
+<script src="messages.json"></script>
 <script src="site.js"></script>
 
 <body onload="init();">
@@ -23,7 +24,7 @@
 <div id="clock">--:--:--</div>
 <br>
 <div class="tabs">
-    <button class="tab active" onclick="switchTab(event, 'Haltestellen')">Haltestellen</button>
+    <button class="tab active" onclick="switchTab(event, 'Haltestellen')" data-message="Haltestellen" onload="displayMessage(this)">Haltestellen</button>
     <button class="tab" onclick="switchTab(event, 'Linien')">Linien</button>
     <button class="tab" onclick="switchTab(event, 'Suche')">Suche</button>
 </div>
