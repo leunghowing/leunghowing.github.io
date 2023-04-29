@@ -842,7 +842,7 @@ function eraseCookie(name) {
 function displayMessage(element) {
     if(dispLang == "" || dispLang == null){
         dispLang = getCookie("lang");
-        console.log(dispLang);
+        console.log("dispLang: " + dispLang);
     }
     if(dispLang != "de"){
         const key = element.getAttribute("data-message");
