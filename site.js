@@ -1,6 +1,26 @@
 var datetimenow = "";
 var getAgain;
 var dispLang ="";
+var messages = {
+    "Busse-de": "Busse",
+    "Busse-en": "Buses",
+    "Busse-ch": "巴士",
+    "Busse-ja": "バス",
+    "Haltestellen-de": "Haltestellen",
+    "Haltestellen-en": "Stops",
+    "Haltestellen-ch": "巴士站",
+    "Haltestellen-ja": "バス停",
+    "Linien-de": "Linien",
+    "Linien-en" : "Routes",
+    "Linien-ch" : "路線",
+    "Linien-ja" : "路線",
+    "Suche-ja" : "系統番号検索",
+    "loading-de": "Lädt...",
+    "loading-en": "Loading...",
+    "loading-ch": "載入中...",
+    "loading-ja": "読み込み中...",
+
+}
 
 function addRoute(resp, data, number){
     resp = resp + "<tr><td>" + data['data'][number]['route'] + "</td><td>"+ data['data'][number]['eta'].substring(11,16) + "</td><td><span class='ziel'>" +  data['data'][number]['dest_tc'] + "</span></td>";
@@ -823,7 +843,9 @@ function displayMessage(element) {
     if(dispLang == ""){
         dispLang = getCookie("lang");
     }
-    const key = element.getAttribute("data-message");
-    const message = messages[`${key}-${lang}`];
-    element.textContent = message;
+    if(display != "de"){
+        const key = element.getAttribute("data-message");
+        const message = messages[`${key}-${lang}`];
+        element.textContent = message;
+    }
   }
