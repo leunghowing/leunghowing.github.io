@@ -824,6 +824,6 @@ function displayMessage(element) {
         dispLang = getCookie("lang");
     }
     const key = element.getAttribute("data-message");
-    const message = messages[`${key}.${lang}`];
+    const message = messages[`${key}-${lang}`];
     element.textContent = message;
   }
