@@ -843,7 +843,7 @@ function displayMessage(element) {
     if(dispLang == ""){
         dispLang = getCookie("lang");
     }
-    if(display != "de"){
+    if(dispLang != "de"){
         const key = element.getAttribute("data-message");
         const message = messages[`${key}-${lang}`];
         element.textContent = message;
