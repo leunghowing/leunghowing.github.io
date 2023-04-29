@@ -840,13 +840,13 @@ function eraseCookie(name) {
 }
 
 function displayMessage(element) {
+    console.log("Hi, displayMsg");
     if(dispLang == "" || dispLang == null){
         dispLang = getCookie("lang");
-        console.log("dispLang: " + dispLang);
     }
     if(dispLang != "de"){
-        const key = element.getAttribute("data-message");
-        const message = messages[`${key}-${lang}`];
+        var key = element.getAttribute("data-message");
+        var message = messages[`${key}-${lang}`];
         element.textContent = message;
     }
   }
