@@ -842,8 +842,8 @@ function eraseCookie(name) {
 function displayMessage(element) {
     if(dispLang == "" || dispLang == null){
         dispLang = getCookie("lang");
+        console.log(dispLang);
     }
-    dispLang = getCookie("lang");
     if(dispLang != "de"){
         const key = element.getAttribute("data-message");
         const message = messages[`${key}-${lang}`];
