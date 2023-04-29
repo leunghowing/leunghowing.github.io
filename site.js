@@ -840,7 +840,7 @@ function eraseCookie(name) {
 }
 
 function displayMessage(element) {
-    if(dispLang == ""){
+    if(dispLang == "" || dispLang == null){
         dispLang = getCookie("lang");
     }
     if(dispLang != "de"){
