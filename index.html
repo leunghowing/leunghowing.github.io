@@ -128,7 +128,7 @@ const json = '{"result":true, "count":42}';
 const obj = JSON.parse(json);
 //console.log(obj['result']);
 
-var tablehead = "<table><tr><th>Linie</th><th>Zeit</th><th>Ziel</th><th><span style='font-size:12px'>Abfahrt in</span></th></tr>";
+var tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage("Zeit") +"</th><th>"+ getMessage("Ziel") +"</th><th><span style='font-size:12px'>"+ getMessage("Abfahrt") +"</span></th></tr>";
 
 function init(){
     checkCookie();

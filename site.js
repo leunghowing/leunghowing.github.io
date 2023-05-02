@@ -52,7 +52,26 @@ var messages = {
     "weg-de": "Weg",
     "weg-en": "Left",
     "weg-ch": "已離開",
-    "weg-ja": "発車した"
+    "weg-ja": "発車した",
+
+    "Zeit-de": "Zeit",
+    "Ziet-en": "Time",
+    "Zeit-ch": "時間",
+    "Zeit-ja": "時刻",
+
+    "Ziel-de": "Ziel",
+    "Ziel-en": "Destination",
+    "Ziel-ch": "目的地",
+    "Ziel-ja": "目的地",
+
+    "Linie-de": "Linie",
+    "Linie-en": "Route",
+    "Linie-ch": "系統",
+    "Linie-ja": "路線",
+    "Abfahrt-de": "Abfahrt in",
+    "Abfahrt-en": "Depart in",
+    "Abfahrt-ch": "等候時間",
+    "Abfahrt-ja": "発車",
 
 
 }
