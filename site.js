@@ -42,7 +42,7 @@ function addRoute(resp, data, number){
         resp = resp + "<td></td>";
     }
     else if(Math.round(diff) < 60){
-        resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> "+ getMessage(Min) +"</span></td>";
+        resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> "+ getMessage("Min") +"</span></td>";
     }
     else{
         resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'> "+ getMessage(Std) +"</span></td>";
@@ -71,7 +71,7 @@ function addUpRoutes(data){
             resp = resp + "<td></td>";
         }
         else if(Math.round(diff) < 60){
-            resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> "+ getMessage(Min) +"</span></td>";
+            resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> "+ getMessage("Min") +"</span></td>";
         }
         else{
             resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'>  "+ getMessage(Std) +".</span></td>";
@@ -365,10 +365,10 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
                         response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                     }
                     else if( diff < 1 ){
-                        response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
+                        response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")</span>";
                     }
                     else{
-                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
+                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min") +")";
                     }
                     //console.log(response[j]);
                     if(data['data'][i+1]['seq']!=null && data['data'][i+1]['seq']!=data['data'][i]['seq']){
@@ -414,10 +414,10 @@ function getSingleRouteSingleStopBravo(company, stopid, route, stopname){
 
                 }
                 else if( diff < 1 ){
-                    response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
+                    response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")</span>";
                 }
                 else{
-                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min") +")";
                 }
                 
             }
@@ -448,10 +448,10 @@ function addBravoUnsorted(company, stopid, route, unsorted){
                 if( diff < 0){
                 }
                 else if( diff < 1 ){
-                    response = response + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")";
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")";
                 }
                 else{
-                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min") +")";
                 }
                 
             }
@@ -717,10 +717,10 @@ function getStopETABravo(stopid, stopseq, route, bound){
                         response = response + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                     }
                     else if( diff < 1 ){
-                        response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
+                        response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")</span>";
                     }
                     else{
-                        response = response +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
+                        response = response +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min") +")";
                     }
                 }
             }
@@ -787,10 +787,10 @@ function getETAdata(route, bound, service_type){
                             response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                         }
                         else if( diff < 1 ){
-                            response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
+                            response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")</span>";
                         }
                         else{
-                            response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
+                            response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min") +")";
                         }
                     }
                     if(i < (data['data'].length -1) && data['data'][i+1]['eta_seq']==1){
