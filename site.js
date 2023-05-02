@@ -876,8 +876,10 @@ function changeLang(lang) {
   }
 
   function getMessage(content){
-    if(dispLang == "" || dispLang == null){
-        dispLang = getCookie('lang');
+    if(dispLang == "" || dispLang == null){        
+        return messages[content+"-de"];
     }
-    return messages[content+"-"+dispLang];
+    else{
+        return messages[content+"-"+dispLang];
+    }
   }
