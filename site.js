@@ -700,7 +700,6 @@ function getSearchRouteStops(route, bound, service_type){
 
 function getSearchRouteStopsBravo(route, bound, oper){
     var oneCharBound = "";
-    //console.log(bound);
     oneCharBound = (bound=="inbound"? "I":"O");
     $.ajax({
         type: 'GET',
@@ -717,18 +716,18 @@ function getSearchRouteStopsBravo(route, bound, oper){
             $('#popupETA').html(response);
             for(var i = 0; i < data['data'].length; i++ ){
                 getStopName(data['data'][i]['stop'],i, oper);
-                getStopETABravo(data['data'][i]['stop'],i,route,oneCharBound);
+                getStopETABravo(data['data'][i]['stop'],i,route,oneCharBound,oper);
                 data2[i]= data['data'][i]['stop'];
             }
             getAgain = setInterval(function() { getStopETAAgain(data2, route, oneCharBound);},10000);
         }
     });
 }
-function getStopETABravo(stopid, stopseq, route, bound){
+function getStopETABravo(stopid, stopseq, route, bound, oper){
     var response = "";
     $.ajax({
         type: 'GET',
-        url: `https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/CTB/${stopid}/${route}`,
+        url: `https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/${oper}/${stopid}/${route}`,
         dataType: 'json',
         success: function(data){
             //console.log(data);
