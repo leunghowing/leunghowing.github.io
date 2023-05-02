@@ -55,7 +55,7 @@ var messages = {
     "weg-ja": "発車した",
 
     "Zeit-de": "Zeit",
-    "Ziet-en": "Time",
+    "Zeit-en": "Time",
     "Zeit-ch": "時間",
     "Zeit-ja": "時刻",
 
@@ -544,17 +544,19 @@ function jQueryRoutesAllOp(searchterm){
                 if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
                     listOfMatches[jj] = [data['data'][i]['route'],  data['data'][i]['dest_tc'], "kmb", data['data'][i]['bound'], data['data'][i]['service_type']]; 
                     jj++;
-                    listOfMatches.sort(function(a, b) {
-                        var aNumber = parseInt(a[0]);
-                        var bNumber = parseInt(b[0]);
-                        var aSuffix = a[0].substring(aNumber.toString().length);
-                        var bSuffix = b[0].substring(bNumber.toString().length);
-                        if (aNumber === bNumber) {
-                          return aSuffix.localeCompare(bSuffix);
-                        } else {
-                          return aNumber - bNumber;
-                        }
-                    });
+                    if(loaded == 3){
+                        listOfMatches.sort(function(a, b) {
+                            var aNumber = parseInt(a[0]);
+                            var bNumber = parseInt(b[0]);
+                            var aSuffix = a[0].substring(aNumber.toString().length);
+                            var bSuffix = b[0].substring(bNumber.toString().length);
+                            if (aNumber === bNumber) {
+                              return aSuffix.localeCompare(bSuffix);
+                            } else {
+                              return aNumber - bNumber;
+                            }
+                        });
+                    }
                     //console.log(listOfMatches);
                     
                     //let appending = "";
@@ -579,17 +581,19 @@ function jQueryRoutesAllOp(searchterm){
                     jj++;
                     listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "nwfb", "inbound", ""];
                     jj++;
-                    listOfMatches.sort(function(a, b) {
-                        var aNumber = parseInt(a[0]);
-                        var bNumber = parseInt(b[0]);
-                        var aSuffix = a[0].substring(aNumber.toString().length);
-                        var bSuffix = b[0].substring(bNumber.toString().length);
-                        if (aNumber === bNumber) {
-                          return aSuffix.localeCompare(bSuffix);
-                        } else {
-                          return aNumber - bNumber;
-                        }
-                    });
+                    if(loaded == 3){
+                        listOfMatches.sort(function(a, b) {
+                            var aNumber = parseInt(a[0]);
+                            var bNumber = parseInt(b[0]);
+                            var aSuffix = a[0].substring(aNumber.toString().length);
+                            var bSuffix = b[0].substring(bNumber.toString().length);
+                            if (aNumber === bNumber) {
+                            return aSuffix.localeCompare(bSuffix);
+                            } else {
+                            return aNumber - bNumber;
+                            }
+                        });
+                    }
                     //console.log(listOfMatches);
                     
                     //let appending = "";
@@ -617,17 +621,19 @@ function jQueryRoutesAllOp(searchterm){
                     jj++;
                     listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "ctb", "inbound", ""];
                     jj++;
+                    if(loaded == 3){
                     listOfMatches.sort(function(a, b) {
-                        var aNumber = parseInt(a[0]);
-                        var bNumber = parseInt(b[0]);
-                        var aSuffix = a[0].substring(aNumber.toString().length);
-                        var bSuffix = b[0].substring(bNumber.toString().length);
-                        if (aNumber === bNumber) {
-                          return aSuffix.localeCompare(bSuffix);
-                        } else {
-                          return aNumber - bNumber;
-                        }
-                    });
+                            var aNumber = parseInt(a[0]);
+                            var bNumber = parseInt(b[0]);
+                            var aSuffix = a[0].substring(aNumber.toString().length);
+                            var bSuffix = b[0].substring(bNumber.toString().length);
+                            if (aNumber === bNumber) {
+                            return aSuffix.localeCompare(bSuffix);
+                            } else {
+                            return aNumber - bNumber;
+                            }
+                        });
+                    }
                     //console.log(listOfMatches);
                     
                     //let appending = "";
