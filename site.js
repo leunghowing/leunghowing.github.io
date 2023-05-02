@@ -16,11 +16,21 @@ var messages = {
     "Linien-ja" : "路線",
     "Suche-en" : "Search",
     "Suche-ch" : "搜尋",
-    "Suche-ja" : "系統番号検索",
+    "Suche-ja" : "番号検索",
     "loading-de": "Lädt...",
     "loading-en": "Loading...",
     "loading-ch": "載入中...",
     "loading-ja": "読み込み中...",
+    
+    "Min-de": "Min.",
+    "Min-en": "min",
+    "Min-ch": "分鐘",
+    "Min-ja": "分",
+    "Std-de": "Std.",
+    "Std-en": "hour",
+    "Std-ch": "小時",
+    "Std-ja": "時間"
+
 
 }
 
@@ -32,10 +42,10 @@ function addRoute(resp, data, number){
         resp = resp + "<td></td>";
     }
     else if(Math.round(diff) < 60){
-        resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> Min.</span></td>";
+        resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> "+ getMessage(Min) +"</span></td>";
     }
     else{
-        resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'>  Std.</span></td>";
+        resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'> "+ getMessage(Std) +"</span></td>";
     }
     //console.log(diff);
     resp = resp + "</tr>"; 
@@ -61,10 +71,10 @@ function addUpRoutes(data){
             resp = resp + "<td></td>";
         }
         else if(Math.round(diff) < 60){
-            resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> Min.</span></td>";
+            resp = resp + "<td>" + Math.round(diff) + "<span style='font-size: 10px;'> "+ getMessage(Min) +"</span></td>";
         }
         else{
-            resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'>  Std.</span></td>";
+            resp = resp + "<td>" + Math.round(diff/60) + "<span style='font-size: 10px;'>  "+ getMessage(Std) +".</span></td>";
         }
         //console.log(diff);
         resp = resp + "</tr>";
@@ -355,10 +365,10 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
                         response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                     }
                     else if( diff < 1 ){
-                        response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
+                        response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
                     }
                     else{
-                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
                     }
                     //console.log(response[j]);
                     if(data['data'][i+1]['seq']!=null && data['data'][i+1]['seq']!=data['data'][i]['seq']){
@@ -404,10 +414,10 @@ function getSingleRouteSingleStopBravo(company, stopid, route, stopname){
 
                 }
                 else if( diff < 1 ){
-                    response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
+                    response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
                 }
                 else{
-                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
                 }
                 
             }
@@ -438,10 +448,10 @@ function addBravoUnsorted(company, stopid, route, unsorted){
                 if( diff < 0){
                 }
                 else if( diff < 1 ){
-                    response = response + data['data'][i]['eta'].substring(11,16) + " (0 Min)";
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")";
                 }
                 else{
-                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                    response = response + data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
                 }
                 
             }
@@ -707,10 +717,10 @@ function getStopETABravo(stopid, stopseq, route, bound){
                         response = response + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                     }
                     else if( diff < 1 ){
-                        response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
+                        response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
                     }
                     else{
-                        response = response +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                        response = response +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
                     }
                 }
             }
@@ -777,10 +787,10 @@ function getETAdata(route, bound, service_type){
                             response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
                         }
                         else if( diff < 1 ){
-                            response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 Min)</span>";
+                            response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage(Min) +")</span>";
                         }
                         else{
-                            response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " Min)";
+                            response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage(Min) +")";
                         }
                     }
                     if(i < (data['data'].length -1) && data['data'][i+1]['eta_seq']==1){
@@ -858,4 +868,11 @@ function changeLang(lang) {
           });
     }
     
+  }
+
+  function getMessage(content){
+    if(dispLang == "" || dispLang == null){
+        dispLang = document.getCookie('lang');
+    }
+    return messages[content+"-"+dispLang];
   }

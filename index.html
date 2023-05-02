@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
 <head>
-<title data-message="Busse" onload="displayMessage(this)">Busse</title>
+<title data-content="Busse">Busse</title>
     <meta name="description" content="Bus Stop ETA">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel = "stylesheet" href = "style.css">
@@ -25,37 +25,37 @@
 <div id="clock">--:--:--</div>
 <br>
 <div class="tabs">
-    <button class="tab active" onclick="switchTab(event, 'Haltestellen')" data-content="Haltestellen" onload="displayMessage(this)">Haltestellen</button>
-    <button class="tab" onclick="switchTab(event, 'Linien')" data-content="Linien" onload="displayMessage(this)">Linien</button>
-    <button class="tab" onclick="switchTab(event, 'Suche')" data-content="Suche" onload="displayMessage(this)">Suche</button>
+    <button class="tab active" onclick="switchTab(event, 'Haltestellen')" data-content="Haltestellen">Haltestellen</button>
+    <button class="tab" onclick="switchTab(event, 'Linien')" data-content="Linien">Linien</button>
+    <button class="tab" onclick="switchTab(event, 'Suche')" data-content="Suche">Suche</button>
 </div>
 
 <div id="Haltestellen" class="tabcontent current">
     <div class="wrap1">  
         <div style="min-width: 20em;">  
         <div class="BusStop">Lo Tsz Tin
-            <div id="LoTszTin" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="LoTszTin" class="anzeige" data-content="loading">Lädt...</div>
         </div>
         <div class="BusStop">TCT
-            <div id="TCT" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="TCT" class="anzeige" data-content="loading">Lädt...</div>
         </div>
         <div class="BusStop">EHC Südwärts
-            <div id="EHCS" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="EHCS" class="anzeige" data-content="loading">Lädt...</div>
         </div>
         <div class="BusStop">Sunway Gdn
-            <div id="sunway" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="sunway" class="anzeige" data-content="loading">Lädt...</div>
         </div>
         <div class="BusStop">Opp Sunway Gdn
-            <div id="oppsunway" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="oppsunway" class="anzeige" data-content="loading">Lädt...</div>
         </div>
         <div class="BusStop">Taikoo Pl
-            <div id="TaikooPl" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="TaikooPl" class="anzeige" data-content="loading">Lädt...</div>
         </div>
         <div class="BusStop">EHC Nordwärts
-            <div id="EHC" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="EHC" class="anzeige" data-content="loading">Lädt...</div>
         </div>
         <div class="BusStop">TCT Nordwärts
-            <div id="TCTN" class="anzeige" data-content="loading" onload="displayMessage(this)">Lädt...</div>
+            <div id="TCTN" class="anzeige" data-content="loading">Lädt...</div>
         </div>
     </div>
     </div>
