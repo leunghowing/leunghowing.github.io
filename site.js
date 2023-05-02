@@ -29,7 +29,12 @@ var messages = {
     "Std-de": "Std.",
     "Std-en": "hour",
     "Std-ch": "小時",
-    "Std-ja": "時間"
+    "Std-ja": "時間",
+
+    "Nodata-de": "Keine Daten",
+    "Nodata-en": "No data",
+    "Nodata-ch": "無資料",
+    "Nodata-ja": "データなし"
 
 
 }
@@ -111,7 +116,7 @@ function getStop(stopids,routes){
     }
   
     if(response == ""){
-        response = "</table><table><td>Keine Daten</td>";
+        response = "</table><table><td>"+ getMessage("Nodata") +"</td>";
     }
     return response;
 }
@@ -198,7 +203,7 @@ function getStopAsync(element, stopids, routes){
                 });
                 response = addUpRoutes(unsorted);
                 if(response == ""){
-                    document.getElementById(element).innerHTML = "Keine Daten";
+                    document.getElementById(element).innerHTML = getMessage("Nodata");
                 }
                 else{
                     document.getElementById(element).innerHTML = tablehead + response + "</table>";
@@ -268,7 +273,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                         });
                         response = addUpRoutes(unsorted);
                         if(response == ""){
-                            document.getElementById(element).innerHTML = "Keine Daten";
+                            document.getElementById(element).innerHTML = getMessage("Nodata");
                         }
                         else{
                             document.getElementById(element).innerHTML = tablehead + response + "</table>";
