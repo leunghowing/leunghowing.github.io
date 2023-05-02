@@ -807,6 +807,10 @@ function checkCookie() {
         var loading = document.getElementById("setLang");
         loading.classList.toggle("hidden-lang");  
     }   
+    else if(lang != 'de'){
+        console.log("changing language");
+        changeLang(lang);
+    }
 }
 
 function setLang180(lang){
@@ -839,14 +843,17 @@ function eraseCookie(name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-function displayMessage(element) {
-    console.log("Hi, displayMsg");
+function changeLang(lang) {
+    console.log("Hi, changelang to " + lang);
     if(dispLang == "" || dispLang == null){
-        dispLang = getCookie("lang");
+        const divs = document.querySelectorAll('[data-content]');
+        divs.forEach(div => {
+            const content = div.getAttribute('data-content');
+            const message = messages[content+"-"+lang];
+            if (message) {
+              div.textContent = message;
+            }
+          });
     }
-    if(dispLang != "de"){
-        var key = element.getAttribute("data-message");
-        var message = messages[`${key}-${lang}`];
-        element.textContent = message;
-    }
+    
   }
