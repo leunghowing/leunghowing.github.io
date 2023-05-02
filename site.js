@@ -14,6 +14,8 @@ var messages = {
     "Linien-en" : "Routes",
     "Linien-ch" : "路線",
     "Linien-ja" : "路線",
+    "Suche-en" : "Search",
+    "Suche-ch" : "搜尋",
     "Suche-ja" : "系統番号検索",
     "loading-de": "Lädt...",
     "loading-en": "Loading...",
