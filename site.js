@@ -66,8 +66,8 @@ var messages = {
 
     "Linie-de": "Linie",
     "Linie-en": "Route",
-    "Linie-ch": "系統",
-    "Linie-ja": "路線",
+    "Linie-ch": "路線",
+    "Linie-ja": "系統",
     "Abfahrt-de": "Abfahrt in",
     "Abfahrt-en": "Depart in",
     "Abfahrt-ch": "等候時間",
