@@ -916,16 +916,14 @@ function eraseCookie(name) {
 
 function changeLang(lang) {
     console.log("Hi, changelang to " + lang);
-    if(dispLang == "" || dispLang == null){
-        const divs = document.querySelectorAll('[data-content]');
-        divs.forEach(div => {
-            const content = div.getAttribute('data-content');
-            const message = messages[content+"-"+lang];
-            if (message) {
-              div.textContent = message;
-            }
-          });
-    }
+    const divs = document.querySelectorAll('[data-content]');
+    divs.forEach(div => {
+        const content = div.getAttribute('data-content');
+        const message = messages[content+"-"+lang];
+        if (message) {
+            div.textContent = message;
+        }
+        });
     
   }
 
