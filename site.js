@@ -34,7 +34,12 @@ var messages = {
     "Nodata-de": "Keine Daten",
     "Nodata-en": "No data",
     "Nodata-ch": "無資料",
-    "Nodata-ja": "データなし"
+    "Nodata-ja": "データなし",
+
+    "weg-de": "Weg",
+    "weg-en": "Left",
+    "weg-ch": "已離開",
+    "weg-ja": "発車した"
 
 
 }
@@ -367,7 +372,7 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                     diff /= 60;
                     if(diff < -0.5){
-                        response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                        response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("weg") +")</span>";
                     }
                     else if( diff < 1 ){
                         response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")</span>";
@@ -415,7 +420,7 @@ function getSingleRouteSingleStopBravo(company, stopid, route, stopname){
                 var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                 diff /= 60;
                 if( diff < -0.5){
-                    response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                    response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("weg") +")</span>";
 
                 }
                 else if( diff < 1 ){
@@ -719,7 +724,7 @@ function getStopETABravo(stopid, stopseq, route, bound){
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                     diff /= 60;
                     if(diff < -0.5){
-                        response = response + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                        response = response + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("weg") +")</span>";
                     }
                     else if( diff < 1 ){
                         response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")</span>";
@@ -789,7 +794,7 @@ function getETAdata(route, bound, service_type){
                         var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
                         diff /= 60;
                         if(diff < -0.5){
-                            response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " (Weg)</span>";
+                            response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("weg") +")</span>";
                         }
                         else if( diff < 1 ){
                             response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min") +")</span>";
