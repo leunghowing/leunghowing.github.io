@@ -877,7 +877,7 @@ function changeLang(lang) {
 
   function getMessage(content){
     if(dispLang == "" || dispLang == null){
-        dispLang = document.getCookie('lang');
+        dispLang = getCookie('lang');
     }
     return messages[content+"-"+dispLang];
   }
