@@ -131,6 +131,7 @@ const obj = JSON.parse(json);
 var tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage("Zeit") +"</th><th>"+ getMessage("Ziel") +"</th><th><span style='font-size:12px'>"+ getMessage("Abfahrt") +"</span></th></tr>";
 
 function init(){
+    getCookieStops();
     checkCookie();
     var tabcontent;
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -167,6 +168,7 @@ function refreshLinien(){
 }
 
 function refresh(){
+    //refreshHaltestellen();
     getStopAsync("LoTszTin",["9AB9D810103D8382"]);
     getStopAsyncAllOperators("TCT", ["FFBEBD7068E01EA4"], ["307","680","681","673"], ['001986'] , ["307","681"], ["001986"], ["682", "682B"]);
     getStopAsyncAllOperators("EHCS",["9535298A652873DB"],["606","613"], ['001463'], ['608','606'], ['001463'], ['682','682B']);
@@ -176,6 +178,10 @@ function refresh(){
     getStopAsync("EHC",["991E47DBD416B908","D678B3364437D16B"],["307","680","681","307P","673","678","373"]);
     getStopAsync("TCTN",["9274EF6791CA3ED8"],["74B","74D","274X","74X","75X","307","307P"]);
     refreshLinien();
+}
+
+function refreshHaltestellen(){
+
 }
 
 function switchTab(evt, tabname) {

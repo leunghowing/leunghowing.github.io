@@ -1,6 +1,7 @@
 var datetimenow = "";
 var getAgain;
 var dispLang ="";
+var cookieStops = [];
 var messages = {
     "Busse-de": "Busse",
     "Busse-en": "Buses",
@@ -252,7 +253,7 @@ function getStopAsync(element, stopids, routes){
 
 }
 
-//TODO
+
 function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ctbroutes, nwftstopids, nwfbroutes){
     var unsorted = [];
     var response = "";
@@ -940,3 +941,114 @@ function changeLang(lang) {
         return messages[content+"-"+dispLang];
     }
   }
+  //
+  function getCookieStops(){
+    var cookieString = getCookie('stops');
+    if(cookieString == null){
+        setCookie('stops','[]',365);
+        cookieStops = [];
+    }
+    else{
+        cookieStops = JSON.parse(cookieString);
+    }
+  }
+  function setCookieStops(){
+    setCookie('stops', JSON.stringify(cookieStops));
+  }
+  function addStopGroup(operator,stopID,route,name){
+    //KMB can add only stop id, bravo requires both stopid and route
+    var StopGroupArray = [];
+    var routeArray = [route];
+    StopGroupArray[0] = name;
+    if(operator=="kmb" && (route==null || route =="")){
+        StopGroupArray[1] = [operator,stopID];
+    }
+    else{
+        StopGroupArray[1] = [operator,stopID,routeArray];
+    }
+    cookieStops[cookieStops.length] = StopGroupArray;
+    setCookieStops();
+  }
+  function removeStopGroup(index){
+    cookieStops.splice(index,1);
+    setCookieStops();
+  }
+  //cookieStops = [StopGroupArray, StopGroupArray, ...]
+  //StopGroupArray[0] = "Display Name"
+  //StopGroupArray[1-] = ["operator", "StopID", ["route1", "route2"]]
+  function addRouteToStopGroup(groupIndex, operator, stopID, route){
+    var containID = false;
+    for(let i = 1; i < cookieStops[groupIndex].length -1; i++){
+        if(cookieStops[groupIndex][i][0] == operator && cookieStops[groupIndex][i][1] == stopID){
+            containID = true;
+            if(cookieStops[groupIndex][i][2] != null){
+                cookieStops[groupIndex][i][2].push(route);
+            }
+        }
+    }
+    if(containID == false){
+        cookieStops[groupIndex][length] = [operator, stopID, [route]];
+    }
+    setCookieStops();
+  }
+  function removeRouteFromStopGroup(groupIndex, operator, stopID, route){
+    var removeOuterIndex = -1;
+    for(let i = 1; i < cookieStops[groupIndex].length -1; i++){
+        if(cookieStops[groupIndex][i][0] == operator && cookieStops[groupIndex][i][1] == stopID){
+            if(cookieStops[groupIndex][i][2] != null){
+                var removeIndex = cookieStops[groupIndex][i][2].indexOf(route);
+                if(removeIndex!= -1 ){
+                    cookieStops[groupIndex][i][2].splice(removeIndex,1);
+                }
+                if(cookieStops[groupIndex][i][2].length == 0){
+                    removeOuterIndex = i;
+                } 
+            }
+        }
+    }
+    if(removeOuterIndex != -1){
+        cookieStops[groupIndex].splice(removeOuterIndex,1);
+    }
+    setCookieStops();
+  }
+  function removeStopIDFromGroup(groupIndex, stopID){
+    var removeOuterIndex = -1;
+    for(let i = 1; i < cookieStops[groupIndex].length -1; i++){
+        if(cookieStops[groupIndex][i][0] == "kmb" && cookieStops[groupIndex][i][1] == stopID){
+            removeOuterIndex = i;
+        }
+    }
+    if(removeOuterIndex != -1){
+        cookieStops[groupIndex].splice(removeOuterIndex,1);
+    }
+    setCookieStops();
+  }
+  function renameStopGroup(groupIndex, newName){
+    cookieStops[groupIndex][0] = newName;
+    setCookieStops();
+  }
+  function moveUpStopGroup(groupIndex){
+    if(groupIndex!=0){
+        tempArray = cookieStops[groupIndex-1];
+        cookieStops[groupIndex-1] = cookieStops[groupIndex];
+        cookieStops[groupIndex] = tempArray;
+    }
+    setCookieStops();
+  }
+  function moveDownStopGroup(){
+    if(groupIndex!=cookieStops.length -1){
+        tempArray = cookieStops[groupIndex + 1];
+        cookieStops[groupIndex+1] = cookieStops[groupIndex];
+        cookieStops[groupIndex] = tempArray;
+    }
+    setCookieStops();
+  }
+
+
+
+  
+  
+  
+  
+  
+  
