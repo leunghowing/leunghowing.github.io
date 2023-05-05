@@ -946,8 +946,8 @@ function changeLang(lang) {
   //
   function getCookieStops(){
     var cookieString = getCookie('stops');
-    if(cookieString == null){
-        setCookie('stops','[[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]]]',365);
+    if(cookieString == null || ){
+        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]]]',365);
         cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]]];
     }
     else{
