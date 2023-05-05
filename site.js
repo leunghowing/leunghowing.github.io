@@ -375,7 +375,7 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
                     });
                     response = addUpRoutes(unsorted);
                     if(response == ""){
-                        document.getElementById(element).innerHTML = "Keine Daten";
+                        document.getElementById(element).innerHTML = getMessage("Nodata");
                     }
                     else{
                         document.getElementById(element).innerHTML = tablehead + response + "</table>";
