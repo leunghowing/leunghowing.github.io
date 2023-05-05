@@ -547,19 +547,6 @@ function jQueryRoutesAllOp(searchterm){
                 if(data['data'][i]['route'].substring(0,searchterm.length)==searchterm){
                     listOfMatches[jj] = [data['data'][i]['route'],  data['data'][i]['dest_tc'], "kmb", data['data'][i]['bound'], data['data'][i]['service_type']]; 
                     jj++;
-                    if(loaded == 3){
-                        listOfMatches.sort(function(a, b) {
-                            var aNumber = parseInt(a[0]);
-                            var bNumber = parseInt(b[0]);
-                            var aSuffix = a[0].substring(aNumber.toString().length);
-                            var bSuffix = b[0].substring(bNumber.toString().length);
-                            if (aNumber === bNumber) {
-                              return aSuffix.localeCompare(bSuffix);
-                            } else {
-                              return aNumber - bNumber;
-                            }
-                        });
-                    }
                     //console.log(listOfMatches);
                     
                     //let appending = "";
@@ -568,6 +555,17 @@ function jQueryRoutesAllOp(searchterm){
                 }
             }
             if(loaded == 3){
+                listOfMatches.sort(function(a, b) {
+                    var aNumber = parseInt(a[0]);
+                    var bNumber = parseInt(b[0]);
+                    var aSuffix = a[0].substring(aNumber.toString().length);
+                    var bSuffix = b[0].substring(bNumber.toString().length);
+                    if (aNumber === bNumber) {
+                    return aSuffix.localeCompare(bSuffix);
+                    } else {
+                    return aNumber - bNumber;
+                    }
+                });
                 generateResults(listOfMatches);
             } 
         }
@@ -584,19 +582,9 @@ function jQueryRoutesAllOp(searchterm){
                     jj++;
                     listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "nwfb", "inbound", ""];
                     jj++;
-                    if(loaded == 3){
-                        listOfMatches.sort(function(a, b) {
-                            var aNumber = parseInt(a[0]);
-                            var bNumber = parseInt(b[0]);
-                            var aSuffix = a[0].substring(aNumber.toString().length);
-                            var bSuffix = b[0].substring(bNumber.toString().length);
-                            if (aNumber === bNumber) {
-                            return aSuffix.localeCompare(bSuffix);
-                            } else {
-                            return aNumber - bNumber;
-                            }
-                        });
-                    }
+                    //if(loaded == 3){
+
+                    //}
                     //console.log(listOfMatches);
                     
                     //let appending = "";
@@ -608,6 +596,17 @@ function jQueryRoutesAllOp(searchterm){
                 }
             }
             if(loaded == 3){
+                listOfMatches.sort(function(a, b) {
+                    var aNumber = parseInt(a[0]);
+                    var bNumber = parseInt(b[0]);
+                    var aSuffix = a[0].substring(aNumber.toString().length);
+                    var bSuffix = b[0].substring(bNumber.toString().length);
+                    if (aNumber === bNumber) {
+                    return aSuffix.localeCompare(bSuffix);
+                    } else {
+                    return aNumber - bNumber;
+                    }
+                });
                 generateResults(listOfMatches);
             } 
         }
@@ -624,19 +623,6 @@ function jQueryRoutesAllOp(searchterm){
                     jj++;
                     listOfMatches[jj] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "ctb", "inbound", ""];
                     jj++;
-                    if(loaded == 3){
-                    listOfMatches.sort(function(a, b) {
-                            var aNumber = parseInt(a[0]);
-                            var bNumber = parseInt(b[0]);
-                            var aSuffix = a[0].substring(aNumber.toString().length);
-                            var bSuffix = b[0].substring(bNumber.toString().length);
-                            if (aNumber === bNumber) {
-                            return aSuffix.localeCompare(bSuffix);
-                            } else {
-                            return aNumber - bNumber;
-                            }
-                        });
-                    }
                     //console.log(listOfMatches);
                     
                     //let appending = "";
@@ -647,6 +633,17 @@ function jQueryRoutesAllOp(searchterm){
                 }
             }
             if(loaded == 3){
+                listOfMatches.sort(function(a, b) {
+                    var aNumber = parseInt(a[0]);
+                    var bNumber = parseInt(b[0]);
+                    var aSuffix = a[0].substring(aNumber.toString().length);
+                    var bSuffix = b[0].substring(bNumber.toString().length);
+                    if (aNumber === bNumber) {
+                    return aSuffix.localeCompare(bSuffix);
+                    } else {
+                    return aNumber - bNumber;
+                    }
+                });
                 generateResults(listOfMatches);
             } 
         }
