@@ -129,9 +129,9 @@ const obj = JSON.parse(json);
 var tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage("Zeit") +"</th><th>"+ getMessage("Ziel") +"</th><th><span style='font-size:12px'>"+ getMessage("Abfahrt") +"</span></th></tr>";
 
 function init(){
-    checkCookie();
     getCookieStops();
     renderStops();
+    checkCookie();
     var tabcontent;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (let i = 1; i < tabcontent.length; i++) {
