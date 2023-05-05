@@ -748,7 +748,7 @@ function getSearchRouteStopsBravo(route, bound, oper){
                 getStopETABravo(data['data'][i]['stop'],i,route,oneCharBound,oper);
                 data2[i]= data['data'][i]['stop'];
             }
-            getAgain = setInterval(function() { getStopETAAgain(data2, route, oneCharBound);},10000);
+            getAgain = setInterval(function() { getStopETAAgain(data2, route, oneCharBound, oper);},10000);
         }
     });
 }
@@ -794,10 +794,10 @@ function getStopETABravo(stopid, stopseq, route, bound, oper){
         }
     });
 }
-function getStopETAAgain(data, route,bound){
+function getStopETAAgain(data, route,bound,oper){
     console.log("HiHi, data:" + data);
     for(var i = 0; i < data.length; i++ ){
-        getStopETABravo(data[i],i,route,bound);
+        getStopETABravo(data[i],i,route,bound,oper);
     }
 }
 
