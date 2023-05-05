@@ -195,6 +195,17 @@ body {
   text-align: right;
   padding: 0.5em 1em 0;
 }
+#neuFertig {
+  height: 20px;
+  font-size: 20px;
+  width: 100%;
+  padding: 0px 15px 5px;
+}
+#neuFertig td:last-child{
+  text-align: right;
+  width:0.5em;
+}
+
 
 #popupETA {
   padding:1em;

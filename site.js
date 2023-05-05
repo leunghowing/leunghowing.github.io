@@ -678,6 +678,7 @@ function checkThisRoute(theRoute){
     let hiDest = theRoute.getAttribute("data-dest");
     let hiOp = theRoute.getAttribute("data-op");
     let hiServiceType = "";
+    $('#destDisp').html(`${hiRoute}&emsp;${hiDest}`);
     if(hiOp=='kmb'){
         hiServiceType = theRoute.getAttribute("data-service-type");   
     }
