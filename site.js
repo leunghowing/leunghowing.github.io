@@ -711,7 +711,7 @@ function getSearchRouteStops(route, bound, service_type){
         success: function(data){
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + "<tr><td>Lädt...</td></tr><tr style='height:30px; font-size:12px'><td>--:--</td></tr>";
+                response = response + "<tr><td style='background-color:red; border-bottom: 5px solid red'/><td>Lädt...</td><td>+</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;'/><td>--:--</td><td/></tr>";
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -735,10 +735,11 @@ function getSearchRouteStopsBravo(route, bound, oper){
         dataType: 'json',
         success: function(data){
             var data2 =[];
+            var color = (oper=="ctb"?"yellow": "white");
             //console.log(data);
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + "<tr><td>Lädt...</td></tr><tr style='height:30px; font-size:12px'><td>--:--</td></tr>";
+                response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'/><td>Lädt...</td><td>+</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};'/><td>--:--</td><td/></tr>`;
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -773,7 +774,7 @@ function getStopETABravo(stopid, stopseq, route, bound, oper){
                         response = response + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("weg") +")</span>";
                     }
                     else if( diff < 0.5 ){
-                        response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Arr") +")</span>";
+                        response = response + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("Arr") +")</span>";
                     }
                     else if( diff < 1 ){
                         response = response + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min-B") +")";
@@ -787,7 +788,7 @@ function getStopETABravo(stopid, stopseq, route, bound, oper){
             var tt = document.getElementById("Hahatable");
             if(response!= null && response!= ''){
                 var tt = document.getElementById("Hahatable");
-                var ttt = tt.getElementsByTagName("td")[stopseq*2+1];
+                var ttt = tt.getElementsByTagName("td")[stopseq*6+4];
                 ttt.innerHTML = response;
             }
         }
@@ -815,7 +816,7 @@ function getStopName(stopid,stopseq, oper){
         dataType: 'json',
         success: function(data){
             var tt = document.getElementById("Hahatable");
-            var ttt = tt.getElementsByTagName("td")[stopseq*2];
+            var ttt = tt.getElementsByTagName("td")[1+ stopseq*6];
             ttt.innerHTML = data['data']['name_tc'];
         }
     });
@@ -864,7 +865,7 @@ function getETAdata(route, bound, service_type){
             var j = 0;
             for(var i = 1; i < tt.rows.length; i +=2){
                 if(response[j]!= null && response[j]!= ''){
-                    var ttt = tt.getElementsByTagName("td")[i];
+                    var ttt = tt.getElementsByTagName("td")[i*3+1];
                     ttt.innerHTML= response[j];
                 }
                 j++;
@@ -1092,7 +1093,6 @@ function changeLang(lang) {
     }
     setCookieStops();
   }
-
 
 
   

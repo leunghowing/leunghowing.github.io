@@ -31,14 +31,12 @@
 </div>
 
 <div id="Haltestellen" class="tabcontent current">
+    <div class="wrap1">
+        <div style="min-width: 20em;" id="testingGround">  
+        </div>
+    </div>
     <div class="wrap1">  
-        <div style="min-width: 20em;">  
-        <div class="BusStop">Lo Tsz Tin
-            <div id="LoTszTin" class="anzeige" data-content="loading">Lädt...</div>
-        </div>
-        <div class="BusStop">TCT
-            <div id="TCT" class="anzeige" data-content="loading">Lädt...</div>
-        </div>
+        <div style="min-width: 20em;">
         <div class="BusStop">EHC Südwärts
             <div id="EHCS" class="anzeige" data-content="loading">Lädt...</div>
         </div>
@@ -131,8 +129,9 @@ const obj = JSON.parse(json);
 var tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage("Zeit") +"</th><th>"+ getMessage("Ziel") +"</th><th><span style='font-size:12px'>"+ getMessage("Abfahrt") +"</span></th></tr>";
 
 function init(){
-    getCookieStops();
     checkCookie();
+    getCookieStops();
+    renderStops();
     var tabcontent;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (let i = 1; i < tabcontent.length; i++) {
@@ -168,9 +167,7 @@ function refreshLinien(){
 }
 
 function refresh(){
-    //refreshHaltestellen();
-    getStopAsync("LoTszTin",["9AB9D810103D8382"]);
-    getStopAsyncAllOperators("TCT", ["FFBEBD7068E01EA4"], ["307","680","681","673"], ['001986'] , ["307","681"], ["001986"], ["682", "682B"]);
+    refreshHaltestellen();
     getStopAsyncAllOperators("EHCS",["9535298A652873DB"],["606","613"], ['001463'], ['608','606'], ['001463'], ['682','682B']);
     getStopAsync("sunway",["633C082A94176ED0"],["307P","678"]);
     getStopAsync("oppsunway",["75CE4282D2043790"],["606"]);
@@ -179,9 +176,33 @@ function refresh(){
     getStopAsync("TCTN",["9274EF6791CA3ED8"],["74B","74D","274X","74X","75X","307","307P"]);
     refreshLinien();
 }
+function renderStops(){
+    var appending = '';
+    for(var i = 0; i < cookieStops.length; i++){
+        appending = appending + renderOneStop(`Stop${i}`,cookieStops[i][0]);
+    }
+     $("#testingGround").html(appending);
 
+}
+function renderOneStop(id, name){
+    return `<div class="BusStop">${name}
+        <div id="${id}" class="anzeige" data-content="loading">Lädt...</div>
+        </div>`;
+}
 function refreshHaltestellen(){
-
+    for(let i = 0; i < cookieStops.length; i++){
+        if(cookieStops[i][3].length == 0 && cookieStops[i][5].length == 0){
+            if(cookieStops[i][2].length>0){
+                getStopAsync(`Stop${i}`, cookieStops[i][1],cookieStops[i][2]);
+            }
+            else{
+                getStopAsync(`Stop${i}`, cookieStops[i][1]);
+            }
+        }
+        else{
+            getStopAsyncAllOperators(`Stop${i}`,cookieStops[i][1],cookieStops[i][2],cookieStops[i][3],cookieStops[i][4],cookieStops[i][5],cookieStops[i][6]);
+        }
+    }
 }
 
 function switchTab(evt, tabname) {
@@ -212,7 +233,6 @@ $(document).ready(function(){
 
 
 });
-
 
 </script>
 </body>

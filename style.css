@@ -268,3 +268,15 @@ border-radius: 5px;
     transform: rotate(360deg);
   }
 }
+#Hahatable{
+  border-collapse:collapse;
+  width: 100%;
+}
+#Hahatable td:first-child{
+  min-width: 10px;
+  max-width: 10px;
+  
+}
+#Hahatable td:nth-child(2){
+  padding-left: 5px;
+}
