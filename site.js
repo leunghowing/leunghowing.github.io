@@ -662,11 +662,11 @@ function generateResults(data){
     $('#srchResults').html("");
     for(let i=0;i<data.length;i++){
         if(data[i][2]=="kmb"){
-            appending = "data-route='" + data[i][0] + "' data-bound='" + data[i][3] + "' data-op='kmb'" + "' data-service-type='" + data[i][4] + "'";
+            appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='" + data[i][3] + "' data-op='kmb'" + "' data-service-type='" + data[i][4] + "'";
             $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data[i][4] - 1) +"</span>") + "</td><tr>" );
         }
         else if(data[i][2]=="ctb" || data[i][2]=="nwfb"){
-            appending = "data-route='" + data[i][0] + "' data-bound='"+ data[i][3]+"' data-op='"+ data[i][2] +"'";
+            appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='"+ data[i][3]+"' data-op='"+ data[i][2] +"'";
             $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid "+(data[i][2]=="ctb"?"yellow":"white")+";'>" + data[i][0] + "</td><td>" +  data[i][1] + "</td><tr>" );
         }
     }
@@ -675,6 +675,7 @@ function generateResults(data){
 function checkThisRoute(theRoute){
     let hiRoute = theRoute.getAttribute("data-route");
     let hiBound = theRoute.getAttribute("data-bound");
+    let hiDest = theRoute.getAttribute("data-dest");
     let hiOp = theRoute.getAttribute("data-op");
     let hiServiceType = "";
     if(hiOp=='kmb'){
@@ -711,7 +712,7 @@ function getSearchRouteStops(route, bound, service_type){
         success: function(data){
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + "<tr><td style='background-color:red; border-bottom: 5px solid red'/><td>Lädt...</td><td>+</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;'/><td>--:--</td><td/></tr>";
+                response = response + "<tr><td style='background-color:red; border-bottom: 5px solid red'/><td>Lädt...</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>--:--</td><td/></tr>";
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -739,7 +740,7 @@ function getSearchRouteStopsBravo(route, bound, oper){
             //console.log(data);
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'/><td>Lädt...</td><td>+</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};'/><td>--:--</td><td/></tr>`;
+                response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'/><td>Lädt...</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};border-bottom: 3px solid black'/><td>--:--</td><td/></tr>`;
             }
             response = response + "</table>";
             $('#popupETA').html(response);
