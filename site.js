@@ -207,6 +207,7 @@ function getStopAsync(element, stopids, routes){
             success: function(data){
                 for(var i = 0; i < data['data'].length; i++ ){ 
                     if(data['data'][i]['eta']!=null){
+                        //if(routes.length>0)
                         if(routes){
                                 if(routes.includes(data['data'][i]['route'])){
                                     let repeated = 0;
@@ -267,6 +268,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                 success: function(data){
                     for(var i = 0; i < data['data'].length; i++ ){ 
                         if(data['data'][i]['eta']!=null){
+                            //if(kmbroutes.length>0)
                             if(kmbroutes){
                                     if(kmbroutes.includes(data['data'][i]['route'])){
                                         let repeated = 0;
@@ -945,8 +947,8 @@ function changeLang(lang) {
   function getCookieStops(){
     var cookieString = getCookie('stops');
     if(cookieString == null){
-        setCookie('stops','[]',365);
-        cookieStops = [];
+        setCookie('stops','[[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]]]',365);
+        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]]];
     }
     else{
         cookieStops = JSON.parse(cookieString);
@@ -955,16 +957,22 @@ function changeLang(lang) {
   function setCookieStops(){
     setCookie('stops', JSON.stringify(cookieStops));
   }
-  function addStopGroup(operator,stopID,route,name){
+  function addStopGroup(name, operator, stopID, route){
     //KMB can add only stop id, bravo requires both stopid and route
     var StopGroupArray = [];
-    var routeArray = [route];
-    StopGroupArray[0] = name;
-    if(operator=="kmb" && (route==null || route =="")){
-        StopGroupArray[1] = [operator,stopID];
+    if(operator=="kmb"){
+        if(route==null || route == ""){
+            StopGroupArray = [name, [stopID],[],[],[],[],[]];
+        }
+        else{
+            StopGroupArray = [name, [stopID],[route],[],[],[],[]];
+        }
     }
-    else{
-        StopGroupArray[1] = [operator,stopID,routeArray];
+    else if(operator == "ctb"){
+        StopGroupArray = [name,[],[],[stopID],[route],[],[]];
+    }
+    else if(operator == "nwfb"){
+        StopGroupArray = [name,[],[],[],[],[stopID],[route]];
     }
     cookieStops[cookieStops.length] = StopGroupArray;
     setCookieStops();
@@ -975,56 +983,97 @@ function changeLang(lang) {
   }
   //cookieStops = [StopGroupArray, StopGroupArray, ...]
   //StopGroupArray[0] = "Display Name"
-  //StopGroupArray[1-] = ["operator", "StopID", ["route1", "route2"]]
+  //StopGroupArray[1] = [kmbstopID1, kmbstopID2, ...]
+  //StopGroupArray[2] = ["kmbroute1", "kmbroute2"] (Optional)
+  //StopGroupArray[3] = [ctbstopID1, ctbstopID2, ...]
+  //StopGroupArray[4] = ["ctbroute1", "ctbroute2"]
+  //StopGroupArray[5] = [nwfbstopID1, nwfbstopID2, ...]
+  //StopGroupArray[6] = ["nwfbroute1", "nwfbroute2"]
+
   function addRouteToStopGroup(groupIndex, operator, stopID, route){
-    var containID = false;
-    for(let i = 1; i < cookieStops[groupIndex].length -1; i++){
-        if(cookieStops[groupIndex][i][0] == operator && cookieStops[groupIndex][i][1] == stopID){
-            containID = true;
-            if(cookieStops[groupIndex][i][2] != null){
-                cookieStops[groupIndex][i][2].push(route);
+    if(operator=="kmb"){
+        if(!cookieStops[groupIndex][1].includes(stopID)){
+            if(route==null || route == ""){//equals to add all routes
+                cookieStops[groupIndex][1].push(stopID);
+                cookieStops[groupIndex][2] =[];
+            }
+            else{
+                cookieStops[groupIndex][1].push(stopID);
+                cookieStops[groupIndex][2].push(route);
+            }
+        }
+        else{//already has the stopid
+            if(route==null || route == ""){
+                cookieStops[groupIndex][2] =[];
+            }
+            else if(!cookieStops[groupIndex][2].includes(route)){
+                cookieStops[groupIndex][2].push(route);
             }
         }
     }
-    if(containID == false){
-        cookieStops[groupIndex][length] = [operator, stopID, [route]];
+    else if(operator == "ctb"){
+        if(!cookieStops[groupIndex][3].includes(stopID)){
+            cookieStops[groupIndex][3].push(stopID);
+            cookieStops[groupIndex][4].push(route);
+        }
+        else{//already has the stopid
+            if(!cookieStops[groupIndex][4].includes(route)){
+                cookieStops[groupIndex][4].push(route);
+            }
+        }    
+    }
+    else if(operator == "nwfb"){
+        if(!cookieStops[groupIndex][5].includes(stopID)){
+            cookieStops[groupIndex][5].push(stopID);
+            cookieStops[groupIndex][6].push(route);
+        }
+        else{//already has the stopid
+            if(!cookieStops[groupIndex][6].includes(route)){
+                cookieStops[groupIndex][6].push(route);
+            }
+        }     
     }
     setCookieStops();
   }
   function removeRouteFromStopGroup(groupIndex, operator, stopID, route){
-    var removeOuterIndex = -1;
-    for(let i = 1; i < cookieStops[groupIndex].length -1; i++){
-        if(cookieStops[groupIndex][i][0] == operator && cookieStops[groupIndex][i][1] == stopID){
-            if(cookieStops[groupIndex][i][2] != null){
-                var removeIndex = cookieStops[groupIndex][i][2].indexOf(route);
-                if(removeIndex!= -1 ){
-                    cookieStops[groupIndex][i][2].splice(removeIndex,1);
-                }
-                if(cookieStops[groupIndex][i][2].length == 0){
-                    removeOuterIndex = i;
-                } 
+    if(operator=="kmb"){
+        if(cookieStops[groupIndex][1].includes(stopID)){
+            if(route==null || route == ""){//equals to remove all routes
+                cookieStops[groupIndex][1].splice(cookieStops[groupIndex][1].indexOf(stopID),1);
+                cookieStops[groupIndex][2] =[];
+            }
+            else{
+                cookieStops[groupIndex][1].splice(cookieStops[groupIndex][1].indexOf(stopID),1);
+                cookieStops[groupIndex][2].splice(cookieStops[groupIndex][2].indexOf(route),1);
             }
         }
     }
-    if(removeOuterIndex != -1){
-        cookieStops[groupIndex].splice(removeOuterIndex,1);
-    }
-    setCookieStops();
-  }
-  function removeStopIDFromGroup(groupIndex, stopID){
-    var removeOuterIndex = -1;
-    for(let i = 1; i < cookieStops[groupIndex].length -1; i++){
-        if(cookieStops[groupIndex][i][0] == "kmb" && cookieStops[groupIndex][i][1] == stopID){
-            removeOuterIndex = i;
+    else if(operator == "ctb"){
+        if(cookieStops[groupIndex][3].includes(stopID)){
+            cookieStops[groupIndex][3].splice(cookieStops[groupIndex][3].indexOf(stopID),1);
+            cookieStops[groupIndex][4].splice(cookieStops[groupIndex][4].indexOf(route),1);
         }
     }
-    if(removeOuterIndex != -1){
-        cookieStops[groupIndex].splice(removeOuterIndex,1);
+    else if(operator == "nwfb"){
+        if(cookieStops[groupIndex][5].includes(stopID)){
+            cookieStops[groupIndex][5].splice(cookieStops[groupIndex][5].indexOf(stopID),1);
+            cookieStops[groupIndex][6].splice(cookieStops[groupIndex][6].indexOf(route),1);
+        }
+  
     }
-    setCookieStops();
+    if(cookieStops[groupIndex][1].length == 0 && cookieStops[groupIndex][3].length == 0 && cookieStops[groupIndex][5].length == 0 ){
+        removeStopGroup(groupIndex);
+    }
+    else{
+        setCookieStops();
+    }
   }
   function renameStopGroup(groupIndex, newName){
     cookieStops[groupIndex][0] = newName;
+    setCookieStops();
+  }
+  function deleteStopGroup(groupIndex){
+    cookieStops.splice(groupIndex,1);
     setCookieStops();
   }
   function moveUpStopGroup(groupIndex){
