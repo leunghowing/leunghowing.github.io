@@ -1019,7 +1019,9 @@ function getLastOpenTab(){
         }
     }
     document.getElementById(tabName).style.display = "block";
-    document.getElementById(tabName).classList.toggle("current");
+    setTimeout(function(){
+        document.getElementById(tabName).className += " current";
+    },10);
 }
 function checkCookie() {
     let lang = getCookie("lang");
