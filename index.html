@@ -104,7 +104,8 @@
         </div>
         <div id="Hihihi">
             <div style="text-align: center;">
-                <input id="myInput" type="text" pattern="[A-Za-z0-9]" placeholder="" class="route-input">
+                <br>
+                <input id="myInput" type="text" pattern="[A-Za-z0-9]" placeholder="" class="route-input"/>
             </div>
             <div class="wrap1">
                 <div class="srchdiv">
@@ -184,7 +185,7 @@ function renderStops(){
 }
 function renderOneStop(index, name){
     return `<div class="BusStop">
-        <table id="HaltestelleTable"><tr><td>${name}</td><td onclick="moveUpStopGroup(${index})">🠵</td><td onclick="moveDownStopGroup(${index})">🠷</td><td onclick="confirmDeleteStopGroup(${index})">✖</td></tr><table>
+        <table id="HaltestelleTable"><tr><td onclick="gruppeUmbenennen(${index})">${name}</td><td onclick="moveUpStopGroup(${index})">🠵</td><td onclick="moveDownStopGroup(${index})">🠷</td><td onclick="confirmDeleteStopGroup(${index})">✖</td></tr><table>
         <div id="Stop${index}" class="anzeige" data-content="loading">Lädt...</div>
         </div>`;
 }

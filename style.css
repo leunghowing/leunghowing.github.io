@@ -132,6 +132,17 @@ body {
   background-color: black;
   color: white;
   border-color: white;
+  border-radius: 10px;
+}
+
+#myInput2 {
+  width:280px;
+  height: 25px;
+  font-size: 15px;
+  background-color: black;
+  color: white;
+  border-color: white;
+  border-radius: 10px;
 }
 .srchdiv {
   max-height: 75vh;
@@ -222,7 +233,7 @@ body {
   text-align: center;
   color: #FFFFFF;
   border-color: #000000;
-border-radius: 5px;
+  border-radius: 5px;
 }
 
 #setLang {
@@ -313,7 +324,7 @@ border-radius: 5px;
   text-align: center;
 }
 .confirmbtn {
-  height:40px;
+  height:30px;
   width: 100px;
   background-color: #111111;
   text-align: center;

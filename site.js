@@ -78,6 +78,10 @@ var messages = {
     "confirmDelGroup-en": "Do you really want to delete this stop?",
     "confirmDelGroup-ch": "確認刪除此站？",
     "confirmDelGroup-ja": "このバス停を削除しますか?",
+    "renameGroup-de": "Haltestelle unbenennen:",
+    "renameGroup-en": "Rename Stop:",
+    "renameGroup-ch": "重新命名此站:",
+    "renameGroup-ja": "バス停名変更:",
     "Ja-de": "Ja",
     "Ja-en": "Yes",
     "Ja-ch": "是",
@@ -85,7 +89,15 @@ var messages = {
     "Nein-de": "Nein",
     "Nein-en": "No",
     "Nein-ch": "否",
-    "Nein-ja": "いいえ"
+    "Nein-ja": "いいえ",
+    "Confirm-de": "Bestätigen",
+    "Confirm-en": "Confirm",
+    "Confirm-ch": "確認",
+    "Confirm-ja": "確認する",
+    "Cancel-de": "Abbrechen",
+    "Cancel-en": "Cancel",
+    "Cancel-ch": "取消",
+    "Cancel-ja": "キャンセルする"
 
 }
 
@@ -1087,16 +1099,30 @@ function changeLang(lang) {
         setCookieStops();
     }
   }
-  function renameStopGroup(groupIndex, newName){
+  function renameStopGroup(groupIndex){
+    var newName = document.getElementById('myInput2').value;
     cookieStops[groupIndex][0] = newName;
+    removeConfirm();
     setCookieStops();
+    renderStops();
+    refreshHaltestellen();
   }
   function confirmDeleteStopGroup(groupIndex){
     $('#Haltestellen').append(`<div id="ConfirmDelGroup">
         <br>${getMessage("confirmDelGroup")}<br><br>
         <button type="button" class="confirmbtn" onclick="removeConfirm();deleteStopGroup(${groupIndex})">${getMessage("Ja")}</button>&ensp;
-        <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Nein")}</button>
+        <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Nein")}</button><br><br>
     </div>`);
+  }
+  function gruppeUmbenennen(groupIndex){
+    $('#Haltestellen').append(`<div id="ConfirmDelGroup">
+        <br>${getMessage("renameGroup")}<br><br>
+        <input id="myInput2" type="text" pattern="[A-Za-z0-9]" value="${cookieStops[groupIndex][0]}"/>
+        <br><br><br>
+        <button type="button" class="confirmbtn" onclick="renameStopGroup(${groupIndex})">${getMessage("Confirm")}</button>&ensp;
+        <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Cancel")}</button><br><br>
+    </div>`);
+    document.getElementById('myInput2').select();
   }
   function removeConfirm(){
     $("#ConfirmDelGroup").remove();
