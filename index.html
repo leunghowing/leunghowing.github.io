@@ -114,12 +114,6 @@ function init(){
     getCookieStops();
     renderStops();
     checkCookie();
-    var tabcontent;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (let i = 1; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-    tabcontent[i].className = tabcontent[i].className.replace(" current","");
-    }
     getTime(1);
     setInterval(getTime,1000);
     setInterval(refresh,10000);

@@ -1021,7 +1021,7 @@ function getLastOpenTab(){
     document.getElementById(tabName).style.display = "block";
     setTimeout(function(){
         document.getElementById(tabName).className += " current";
-    },10);
+    },1);
 }
 function checkCookie() {
     let lang = getCookie("lang");
