@@ -1,7 +1,12 @@
 var datetimenow = "";
 var getAgain;
 var dispLang ="";
+var isAllOpLoaded = false;
 var cookieStops = [];
+var allRouteData = [];
+var BravoDay = new Date(1688137200000);
+var Today = new Date();
+var isBravoDay = Today>BravoDay? true: false;
 var messages = {
     "Busse-de": "Busse",
     "Busse-en": "Buses",
@@ -322,12 +327,12 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                             }
                         }
                     }
-                    if(ctbstopids || nwftstopids){
-                        if(ctbstopids){ //ctbstopids is an array and ctbroutes is a 2D array
+                    if(ctbstopids.length > 0  || nwftstopids.length > 0){
+                        if(ctbstopids.length > 0){ //ctbstopids is an array and ctbroutes is a 2D array
                             addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
                 
                         }
-                        if(nwftstopids){
+                        if(nwftstopids.length > 0){
                             addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
                         }
                     }
@@ -351,10 +356,10 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
         }
     }
     else{
-        if(ctbstopids){
+        if(ctbstopids.length > 0){
             addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
         }
-        if(nwftstopids){
+        if(nwftstopids.length > 0){
             addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
         }
     }
@@ -414,9 +419,11 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
 
 function getSingleRouteStopsAsync(route, bound, seq, stopnames){
     var response = [];
+    var splitRoute = route.split("-");
+    var SvcType = splitRoute[1]==null? "1" : splitRoute[1];
     $.ajax({
         type: 'GET',
-        url:'https://data.etabus.gov.hk/v1/transport/kmb/route-eta/'+ route + "/1",
+        url:`https://data.etabus.gov.hk/v1/transport/kmb/route-eta/${splitRoute[0]}/${SvcType}`,
         dataType: 'json',
         success: function(data){
             let j = 0;
@@ -554,7 +561,98 @@ function jQueryRoutes(searchterm){
 
 }
 
+function PrejQueryRoutesAllOp(){
+    var loadedOp = 0;
+    var requiredLoad = isBravoDay? 2: 3;
+    let j = 0;
+    $.ajax({
+        type: 'GET',
+        url: 'https://data.etabus.gov.hk/v1/transport/kmb/route/',
+        dataType: 'json',
+        success: function(data){
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                allRouteData[j] = [data['data'][i]['route'], data['data'][i]['dest_tc'], "kmb", data['data'][i]['bound'], data['data'][i]['service_type'], data['data'][i]['dest_en'].replace(
+                    /(\w)(\w*)/g,
+                    (_, firstChar, rest) => firstChar + rest.toLowerCase()
+                  )]; 
+                j++;
+            }
+            loadedOp++;
+            if(loadedOp==requiredLoad){
+                isAllOpLoaded = true;
+            }
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/route/ctb',
+        dataType: 'json',
+        success: function(data){
+            for(var i = 0; i < data['data'].length; i++ ){ 
+                allRouteData[j] = [data['data'][i]['route'], data['data'][i]['dest_tc'], "ctb", "outbound", "", data['data'][i]['dest_en']];
+                j++;
+                allRouteData[j] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "ctb", "inbound", "", data['data'][i]['orig_en']];
+                j++;
+            }
+            loadedOp++;
+            if(loadedOp==requiredLoad){
+                isAllOpLoaded = true;
+            }
+        }
+    });
+    if(!isBravoDay){
+        $.ajax({
+            type: 'GET',
+            url: 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/route/nwfb',
+            dataType: 'json',
+            success: function(data){
+                for(var i = 0; i < data['data'].length; i++ ){ 
+                    allRouteData[j] = [data['data'][i]['route'], data['data'][i]['dest_tc'], "nwfb", "outbound", "", data['data'][i]['dest_en']];
+                    j++;
+                    allRouteData[j] = [data['data'][i]['route'], data['data'][i]['orig_tc'], "nwfb", "inbound", "", data['data'][i]['orig_en']];
+                    j++;
+                }
+                loadedOp++;
+                if(loadedOp==requiredLoad){
+                    isAllOpLoaded = true;
+                }
+            }
+        });
+    }
+}
 
+function newjQueryRoutesAllOpStage1(searchterm){
+    var loading = document.getElementById("LoadingAh");
+    loading.classList.toggle("hidden-load");
+    setInterval(checkjQueryReady,50,searchterm);
+}
+function checkjQueryReady(searchterm){
+    if(isAllOpLoaded){
+        newjQueryRoutesAllOpStage2(searchterm);
+    }
+}
+function newjQueryRoutesAllOpStage2(searchterm){
+    var listOfMatches = []; //[route, dest, oper, bound, service-type (kmb), dest_en ]
+    var jj = 0;
+    for(let i = 0; i < allRouteData.length; i ++){
+        if(allRouteData[i][0].substring(0,searchterm.length)==searchterm){
+            listOfMatches[jj] = allRouteData[i];
+            jj++;
+        }
+    }
+    listOfMatches.sort(function(a, b) {
+        var aNumber = parseInt(a[0]);
+        var bNumber = parseInt(b[0]);
+        var aSuffix = a[0].substring(aNumber.toString().length);
+        var bSuffix = b[0].substring(bNumber.toString().length);
+        if (aNumber === bNumber) {
+        return aSuffix.localeCompare(bSuffix);
+        } else {
+        return aNumber - bNumber;
+        }
+    });
+    generateResults(listOfMatches);
+}
 function jQueryRoutesAllOp(searchterm){
     var listOfMatches = []; //[route, dest, oper, bound, service-type (kmb) ]
     let jj=0;
@@ -681,14 +779,16 @@ function generateResults(data){
     loading.classList.toggle("hidden-load");
     let appending = "";
     $('#srchResults').html("");
-    for(let i=0;i<data.length;i++){
-        if(data[i][2]=="kmb"){
-            appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='" + data[i][3] + "' data-op='kmb'" + "' data-service-type='" + data[i][4] + "'";
-            $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data[i][4] - 1) +"</span>") + "</td><tr>" );
-        }
-        else if(data[i][2]=="ctb" || data[i][2]=="nwfb"){
-            appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='"+ data[i][3]+"' data-op='"+ data[i][2] +"'";
-            $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid "+(data[i][2]=="ctb"?"yellow":"white")+";'>" + data[i][0] + "</td><td>" +  data[i][1] + "</td><tr>" );
+    if(data.length> 0){
+        for(let i=0;i<data.length;i++){
+            if(data[i][2]=="kmb"){
+                appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='" + data[i][3] + "' data-op='kmb'" + "' data-service-type='" + data[i][4] + "'";
+                $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data[i][4] - 1) +"</span>") + "</td><tr>" );
+            }
+            else if(data[i][2]=="ctb" || data[i][2]=="nwfb"){
+                appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='"+ data[i][3]+"' data-op='"+ data[i][2] +"'";
+                $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid "+(data[i][2]=="ctb"?"yellow":"white")+";'>" + data[i][0] + "</td><td>" +  data[i][1] + "</td><tr>" );
+            }
         }
     }
 }
@@ -897,8 +997,30 @@ function getETAdata(route, bound, service_type){
     });
 
 }
-
-
+function getLastOpenTab(){
+    let tabName = getCookie("lasttab");
+    if (tabName == "" || tabName == null){
+        setCookie('lasttab','Haltestellen',10);
+        tabName = "Haltestellen";
+    }
+    var tabcontent, tab;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (let i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+        tabcontent[i].className = tabcontent[i].className.replace(" current","");
+    }
+    tab = document.getElementsByClassName("tab");
+    for (i = 0; i < tab.length; i++) {
+        tab[i].className = tab[i].className.replace(" active", "");
+        if(tab[i].getAttribute('data-content') == tabName){
+            tab[i].classList.toggle("active");
+        }
+    }
+    document.getElementById(tabName).style.display = "block";
+    setTimeout(function(){
+        document.getElementById(tabName).className += " current";
+    },1);
+}
 function checkCookie() {
     let lang = getCookie("lang");
     if (lang == "" || lang == null){

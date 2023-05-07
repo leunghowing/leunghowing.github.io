@@ -25,12 +25,12 @@
 <div id="clock">--:--:--</div>
 <br>
 <div class="tabs">
-    <button class="tab active" onclick="switchTab(event, 'Haltestellen')" data-content="Haltestellen">Haltestellen</button>
+    <button class="tab" onclick="switchTab(event, 'Haltestellen')" data-content="Haltestellen">Haltestellen</button>
     <button class="tab" onclick="switchTab(event, 'Linien')" data-content="Linien">Linien</button>
     <button class="tab" onclick="switchTab(event, 'Suche')" data-content="Suche">Suche</button>
 </div>
 
-<div id="Haltestellen" class="tabcontent current">
+<div id="Haltestellen" class="tabcontent">
     <div class="wrap1">
         <div style="min-width: 20em;" id="testingGround">
         </div>
@@ -110,6 +110,7 @@ const obj = JSON.parse(json);
 var tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage("Zeit") +"</th><th>"+ getMessage("Ziel") +"</th><th><span style='font-size:12px'>"+ getMessage("Abfahrt") +"</span></th></tr>";
 
 function init(){
+    getLastOpenTab();
     getCookieStops();
     renderStops();
     checkCookie();
@@ -122,6 +123,7 @@ function init(){
     getTime(1);
     setInterval(getTime,1000);
     setInterval(refresh,10000);
+    PrejQueryRoutesAllOp();
 }
 
 function getTime(firstload){
@@ -182,6 +184,7 @@ function refreshHaltestellen(){
 }
 
 function switchTab(evt, tabname) {
+  setCookie('lasttab', tabname,10);
   var tabcontent, tab;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (let i = 0; i < tabcontent.length; i++) {
@@ -203,7 +206,7 @@ $(document).ready(function(){
         $('#srchResults').html("");
         if($('#myInput').val() != ""){
             var searchterm = $('#myInput').val().toUpperCase();
-            jQueryRoutesAllOp(searchterm);
+            newjQueryRoutesAllOpStage1(searchterm);
         }
     });
 
