@@ -17,11 +17,10 @@ body {
 .kmb th,td{
   border: 1px solid #ddd;
 }*/
-/*
 .anzeige table{
   margin-left: auto;
   margin-right: auto;
-}*/
+}
 .anzeige tbody tr th,.anzeige tbody tr td{
   text-align: left;
   width: 3em;
@@ -64,10 +63,14 @@ body {
   margin: 0 auto;
   border: 1px solid black;
 }
+.tabs{
+  text-align: center;
+}
 .tabs button {
   background-color: inherit;
   width: 30vw;
   min-width: 3.5em;
+  max-width: 350px;
   color: white;
   cursor: pointer;
   transition: 0.5s;
@@ -306,7 +309,8 @@ body {
 
 #HaltestelleTable{
   width: 100%;
-  max-width: 1000px;;
+  max-width: 800px;
+  min-width: 40vw;
 }
 #HaltestelleTable td:not(:first-child){
   width: 30px;
