@@ -903,7 +903,8 @@ function checkCookie() {
     let lang = getCookie("lang");
     if (lang == "" || lang == null){
         var loading = document.getElementById("setLang");
-        loading.classList.toggle("hidden-lang");  
+        loading.classList.toggle("hidden-lang");
+        setTimeout(langTimeout,10000);
     }   
     else if(lang != 'de'){
         console.log("changing language");
