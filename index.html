@@ -184,7 +184,7 @@ function renderStops(){
 }
 function renderOneStop(index, name){
     return `<div class="BusStop">
-        <table id="HaltestelleTable"><tr><td onclick="gruppeUmbenennen(${index})">${name}</td><td onclick="moveUpStopGroup(${index})">\uD83E\uDC35</td><td onclick="moveDownStopGroup(${index})">🠷</td><td onclick="confirmDeleteStopGroup(${index})">✖</td></tr><table>
+        <table id="HaltestelleTable"><tr><td onclick="gruppeUmbenennen(${index})">${name}</td><td onclick="moveUpStopGroup(${index})">↑</td><td onclick="moveDownStopGroup(${index})">↓</td><td onclick="confirmDeleteStopGroup(${index})">✖</td></tr><table>
         <div id="Stop${index}" class="anzeige" data-content="loading">Lädt...</div>
         </div>`;
 }

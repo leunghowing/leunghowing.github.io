@@ -306,10 +306,11 @@ body {
 
 #HaltestelleTable{
   width: 100%;
+  max-width: 1000px;;
 }
 #HaltestelleTable td:not(:first-child){
-  width: 20px;
-  max-width: 20px;
+  width: 30px;
+  max-width: 30px;
 }
 
 #ConfirmDelGroup {
