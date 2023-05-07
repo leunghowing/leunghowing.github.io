@@ -2,6 +2,7 @@ var datetimenow = "";
 var getAgain;
 var dispLang ="";
 var isAllOpLoaded = false;
+var checkInterval;
 var cookieStops = [];
 var allRouteData = [];
 var BravoDay = new Date(1688137200000);
@@ -624,12 +625,12 @@ function PrejQueryRoutesAllOp(){
 function newjQueryRoutesAllOpStage1(searchterm){
     var loading = document.getElementById("LoadingAh");
     loading.classList.toggle("hidden-load");
-    setInterval(checkjQueryReady,50,searchterm);
+    checkInterval = setInterval(checkjQueryReady,50,searchterm);
 }
 function checkjQueryReady(searchterm){
     if(isAllOpLoaded){
         newjQueryRoutesAllOpStage2(searchterm);
-        clearInterval(checkjQueryReady);
+        clearInterval(checkInterval);
     }
 }
 function newjQueryRoutesAllOpStage2(searchterm){
