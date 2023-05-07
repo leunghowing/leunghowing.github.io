@@ -55,13 +55,14 @@ body {
   text-align:center;
 }
 .circle {
-  height: 10px;
-  width: 10px;
+  height: 8px;
+  width: 8px;
   background-color: white;
   border-radius: 50%;
   display: block;
   text-align:center;
   margin: 0 auto;
+  border: 1px solid black;
 }
 .tabs button {
   background-color: inherit;
@@ -290,4 +291,33 @@ border-radius: 5px;
 }
 #Hahatable td:nth-child(2){
   padding-left: 5px;
+}
+
+#HaltestelleTable{
+  width: 100%;
+}
+#HaltestelleTable td:not(:first-child){
+  width: 20px;
+  max-width: 20px;
+}
+
+#ConfirmDelGroup {
+  background-color: #111111;
+  width: 300px;
+  border-radius: 10px;
+  padding: 8px 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.confirmbtn {
+  height:40px;
+  width: 100px;
+  background-color: #111111;
+  text-align: center;
+  color: #FFFFFF;
+  border-color: #000000;
+border-radius: 5px;
 }

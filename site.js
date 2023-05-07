@@ -74,6 +74,18 @@ var messages = {
     "Abfahrt-ch": "等候時間",
     "Abfahrt-ja": "発車",
 
+    "confirmDelGroup-de": "Möchten Sie diese Haltestelle wirklich löschen?",
+    "confirmDelGroup-en": "Do you really want to delete this stop?",
+    "confirmDelGroup-ch": "確認刪除此站？",
+    "confirmDelGroup-ja": "このバス停を削除しますか?",
+    "Ja-de": "Ja",
+    "Ja-en": "Yes",
+    "Ja-ch": "是",
+    "Ja-ja": "はい",
+    "Nein-de": "Nein",
+    "Nein-en": "No",
+    "Nein-ch": "否",
+    "Nein-ja": "いいえ"
 
 }
 
@@ -697,7 +709,7 @@ function removePopup(){
     popup.classList.toggle("show");
     var hihihi = document.getElementById("Hihihi");
     hihihi.classList.toggle("hidden");
-    $('#popupETA').html("Lädt...");
+    $('#popupETA').html(getMessage("loading"));
     clearInterval(getAgain);
 }
 
@@ -710,7 +722,7 @@ function getSearchRouteStops(route, bound, service_type){
         success: function(data){
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + "<tr><td style='background-color:red; border-bottom: 5px solid red'/><td>Lädt...</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>--:--</td><td/></tr>";
+                response = response + "<tr><td style='background-color:red; border-bottom: 5px solid red'><span class='circle'/></td><td>"+getMessage("loading")+"</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>--:--</td><td/></tr>";
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -738,7 +750,7 @@ function getSearchRouteStopsBravo(route, bound, oper){
             //console.log(data);
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'/><td>Lädt...</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};border-bottom: 3px solid black'/><td>--:--</td><td/></tr>`;
+                response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'><span class='circle'/></td><td>${getMessage("loading")}</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};border-bottom: 3px solid black'/><td>--:--</td><td/></tr>`;
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -764,7 +776,7 @@ function getStopETABravo(stopid, stopseq, route, bound, oper){
                     response = ""; 
                 }
                 if(response!=""){
-                    response += "\t";
+                    response += "&emsp;";
                 }
                 if(data['data'][i]['eta']!= null && data['data'][i]['eta']!= "" && data['data'][i]['dir']==(bound)){
                     var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
@@ -837,7 +849,7 @@ function getETAdata(route, bound, service_type){
                         response[j] = ""; 
                     }
                     if(response[j]!=""){
-                        response[j] += "\t";
+                        response[j] += "&emsp;";
                     }
                     if(data['data'][i]['eta']!= null){
                         var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
@@ -894,6 +906,11 @@ function setLang180(lang){
     location.reload();
 }
 
+function langTimeout(){
+    var loading = document.getElementById("setLang");
+    loading.classList.toggle("hidden-lang");  
+}
+
 function setCookie(name,value,days) {
     var expires = "";
     if (days) {
@@ -947,8 +964,10 @@ function changeLang(lang) {
   function getCookieStops(){
     var cookieString = getCookie('stops');
     if(cookieString == null || cookieString == ""){
-        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]]]',365);
-        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]]];
+        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],\
+        ["EHC Südwarts",["9535298A652873DB"],["606","613"], ["001463"], ["608","606"], ["001463"], ["682","682B"]]]',365);
+        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],
+        ["EHC Südwarts",["9535298A652873DB"],["606","613"], ["001463"], ["608","606"], ["001463"], ["682","682B"]]];
     }
     else{
         cookieStops = JSON.parse(cookieString);
@@ -1072,25 +1091,41 @@ function changeLang(lang) {
     cookieStops[groupIndex][0] = newName;
     setCookieStops();
   }
+  function confirmDeleteStopGroup(groupIndex){
+    $('#Haltestellen').append(`<div id="ConfirmDelGroup">
+        <br>${getMessage("confirmDelGroup")}<br><br>
+        <button type="button" class="confirmbtn" onclick="removeConfirm();deleteStopGroup(${groupIndex})">${getMessage("Ja")}</button>&ensp;
+        <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Nein")}</button>
+    </div>`);
+  }
+  function removeConfirm(){
+    $("#ConfirmDelGroup").remove();
+  }
   function deleteStopGroup(groupIndex){
     cookieStops.splice(groupIndex,1);
     setCookieStops();
+    renderStops();
+    refreshHaltestellen();
   }
   function moveUpStopGroup(groupIndex){
     if(groupIndex!=0){
         tempArray = cookieStops[groupIndex-1];
         cookieStops[groupIndex-1] = cookieStops[groupIndex];
         cookieStops[groupIndex] = tempArray;
+        setCookieStops();
+        renderStops();
+        refreshHaltestellen();
     }
-    setCookieStops();
   }
-  function moveDownStopGroup(){
+  function moveDownStopGroup(groupIndex){
     if(groupIndex!=cookieStops.length -1){
         tempArray = cookieStops[groupIndex + 1];
         cookieStops[groupIndex+1] = cookieStops[groupIndex];
         cookieStops[groupIndex] = tempArray;
+        setCookieStops();
+        renderStops();
+        refreshHaltestellen();
     }
-    setCookieStops();
   }
 
 
