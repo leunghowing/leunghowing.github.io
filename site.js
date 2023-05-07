@@ -629,6 +629,7 @@ function newjQueryRoutesAllOpStage1(searchterm){
 function checkjQueryReady(searchterm){
     if(isAllOpLoaded){
         newjQueryRoutesAllOpStage2(searchterm);
+        clearInterval(checkjQueryReady);
     }
 }
 function newjQueryRoutesAllOpStage2(searchterm){
