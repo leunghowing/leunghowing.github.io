@@ -17,6 +17,10 @@ var messages = {
     "Haltestellen-en": "Stops",
     "Haltestellen-ch": "巴士站",
     "Haltestellen-ja": "バス停",
+    "Haltestellenliste-de": "Haltestellenliste",
+    "Haltestellenliste-en": "Stops List",
+    "Haltestellenliste-ch": "巴士站表",
+    "Haltestellenliste-ja": "バス停リスト",
     "Linien-de": "Linien",
     "Linien-en" : "Routes",
     "Linien-ch" : "路線",
@@ -84,7 +88,7 @@ var messages = {
     "confirmDelGroup-en": "Do you really want to delete this stop?",
     "confirmDelGroup-ch": "確認刪除此站？",
     "confirmDelGroup-ja": "このバス停を削除しますか?",
-    "renameGroup-de": "Haltestelle unbenennen:",
+    "renameGroup-de": "Haltestelle umbenennen:",
     "renameGroup-en": "Rename Stop:",
     "renameGroup-ch": "重新命名此站:",
     "renameGroup-ja": "バス停名変更:",
@@ -114,18 +118,31 @@ var messages = {
     "Gruppehzfg-en": "Add to stop list as new",
     "Gruppehzfg-ch": "加入巴士站表",
     "Gruppehzfg-ja": "バス停リストに追加",
-    "GruppehEntf-de": "Aus der Haltestelleliste entfernen.",
+    "Gruppehzfg2-de": "Zu einer bestehenden Haltestelle der Liste hinzufügen",
+    "Gruppehzfg2-en": "Add to an existing stop into stop list",
+    "Gruppehzfg2-ch": "加入巴士站表內車站",
+    "Gruppehzfg2-ja": "リスト既存のバス停に追加",
+    "GruppehEntf-de": "Aus der Haltestelleliste entfernen",
     "GruppehEntf-en": "Remove from stop list",
     "GruppehEntf-ch": "從巴士站表移除",
     "GruppehEntf-ja": "バス停リストから削除",
-    "kmbhzfg-de": "Alle KMB-Linien dieser Hst. zur Liste hinzuf.",
-    "kmbhzfg-en": "Add all KMB-routes of this stop to stop list",
+    "kmbhzfg-de": "Alle KMB-Linien dieser Haltestelle zur Liste hinzufügen",
+    "kmbhzfg-en": "Add all KMB-routes of this stop into stop list",
     "kmbhzfg-ch": "新增此站所有九巴路線至巴士站表",
     "kmbhzfg-ja": "すべてのKMBバス路線リストに追加",
-    "kmbentf-de": "Alle KMB-Linien dieser Hst. aus der Liste entf.",
+    "kmbhzfg2-de": "Alle KMB-Linien dieser Haltestelle zu bestehender Haltestelle hinzufügen",
+    "kmbhzfg2-en": "Add all KMB-routes of this existing stop into list",
+    "kmbhzfg2-ch": "新增此站所有九巴路線至巴士站表",
+    "kmbhzfg2-ja": "リスト既存のバス停に、すべてのKMBバス路線追加",
+    "kmbentf-de": "Alle KMB-Linien dieser Haltestelle aus der Liste entfernen",
     "kmbentf-en": "Remove all KMB-routes from stop list",
     "kmbentf-ch": "從巴士站表移除此站所有九巴路線",
-    "kmbentf-ja": "リストからすべてのKMBバス路線を削除"
+    "kmbentf-ja": "リストからすべてのKMBバス路線を削除",
+
+    "hzfgFertig-de": "Erfolgreich hinzugefügt",
+    "hzfgFertig-en": "Successfully added",
+    "hzfgFertig-ch": "新增成功",
+    "hzfgFertig-ja": "追加成功",
 
 
 }
@@ -427,6 +444,7 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
                         return a.eta.localeCompare(b.eta);
                     });
                     response = addUpRoutes(unsorted);
+                    console.log("response:"+ response);
                     if(response == ""){
                         document.getElementById(element).innerHTML = getMessage("Nodata");
                     }
@@ -452,7 +470,7 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
         success: function(data){
             let j = 0;
             for(var i = 0; i < data['data'].length; i++ ){ 
-                if(data['data'][i]['dir'] == bound && data['data'][i]['seq']==seq[j]){
+                if(data['data'][i]['dir'] == bound && data['data'][i]['seq']==seq[j] && data['data'][i]['eta']!=null){
                     if(response[j]==null){
                         response[j] = ""; 
                     }
@@ -809,7 +827,7 @@ function generateResults(data){
         for(let i=0;i<data.length;i++){
             if(data[i][2]=="kmb"){
                 appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='" + data[i][3] + "' data-op='kmb'" + "' data-service-type='" + data[i][4] + "'";
-                $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> "+getMessage("Route")+ (data[i][4] - 1) +"</span>") + "</td><tr>" );
+                $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> "+getMessage("Route")+ data[i][4] +"</span>") + "</td><tr>" );
             }
             else if(data[i][2]=="ctb" || data[i][2]=="nwfb"){
                 appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='"+ data[i][3]+"' data-op='"+ data[i][2] +"'";
@@ -863,7 +881,7 @@ function getSearchRouteStops(route, bound, service_type){
             for(var i = 0; i < data['data'].length; i++ ){
                 response = response + `<tr><td style='background-color:red; border-bottom: 5px solid red'><span class='circle'/></td><td>"+getMessage("loading")+"</td><td 
                 data-oper='kmb' data-route='${routeString}' data-stopid='${data['data'][i]['stop']}' data-bound='${bound}'
-                onclick='showAddOptions(this,"kmb")'>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>- - : - -</td><td/></tr>`;
+                onclick='showAddOptions(this,"kmb")'><button type="button" class="addbtn">⋮</button></td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>- - : - -</td><td/></tr>`;
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -878,21 +896,77 @@ function getSearchRouteStops(route, bound, service_type){
     });
 }
 function showAddOptions(element, kmbopt){
-    $('#Suche').append(`<div id="AddStopGroup"><br>
-    <br>
-    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg")}</button><br>
-    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</button><br>
-    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg")}</button><br>
-    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbentf")}</button><br>
-    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Cancel")}</button><br><br>
-    </div>`);
+    var oper = element.getAttribute("data-oper");
+    var route = element.getAttribute("data-route");
+    var stopid = element.getAttribute("data-stopid");
+    createOverlay();
+    if(kmbopt){
+        $('#Suche').append(`<div id="AddStopGroup" class="top">
+        <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
+        <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("Haltestellenliste")}</div>
+        <button type="button" class="addStopbtn" data-oper="kmb" data-route='${route}' data-stopid='${stopid}' onclick="removeAddFertigMsg();gruppehzfg(this)">${getMessage("Gruppehzfg")}</button><br>
+        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg2")}</button><br>
+        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</button><br>
+        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg")}</button><br>
+        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg2")}</button><br>
+        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbentf")}</button><br><br><br>
+        </div>`);
+    }
+    else{
+        $('#Suche').append(`<div id="AddStopGroup" class="top">
+        <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
+        <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("Haltestellenliste")}</div>
+        <button type="button" class="addStopbtn" data-oper="${oper}" data-route='${route}' data-stopid='${stopid}' onclick="removeAddFertigMsg();gruppehzfg(this)">${getMessage("Gruppehzfg")}</button><br>
+        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg2")}</button><br>
+        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</button><br><br><br>
+        </div>`);
+    }
+    
     //stopName, operator, stopID, route
     //kmb route : "route-service_type" if service type not 1
     //console.log(oper, route, stopID, bound);
 }
+function gruppehzfg(element){
+    var oper = element.getAttribute("data-oper");
+    var route = element.getAttribute("data-route");
+    var stopid = element.getAttribute("data-stopid");
+    console.log(oper, route, stopid);
+    var link;
+    var en_name, ch_name;
+    if(oper == "kmb"){
+        link = 'https://data.etabus.gov.hk/v1/transport/kmb/stop/';
+    }
+    else if(oper == "ctb" || oper == "nwfb"){
+        link = 'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/stop/'
+    }
+    $.ajax({
+        type: 'GET',
+        url: link + stopid,
+        dataType: 'json',
+        success: function(data){
+            en_name = data['data']['name_en'];
+            ch_name = data['data']['name_tc'];
+            addStopGroup(ch_name, oper, stopid, route);
+
+        }
+    });
+}
 function removeAdd(){
+    removeOverlay();
     $("#AddStopGroup").remove();
 }
+function removeAddFertigMsg(){
+    $("#AddStopGroup").remove();
+    $('#Suche').append(`<div id="AddStopGroupFertig" class="top">
+    <div style="font-size:50px">✓</div><br>
+    <div>${getMessage("hzfgFertig")}</div>
+    </div>`);
+    setTimeout(() => {
+        $("#AddStopGroupFertig").remove();
+        removeOverlay();
+    }, 1000);
+}
+
 function chooseAdd(element){
 
 }
@@ -910,7 +984,9 @@ function getSearchRouteStopsBravo(route, bound, oper){
             //console.log(data);
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'><span class='circle'/></td><td>${getMessage("loading")}</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};border-bottom: 3px solid black'/><td>--:--</td><td/></tr>`;
+                response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'><span class='circle'/></td><td>${getMessage("loading")}</td><td
+                data-oper='${oper}' data-route='${route}' data-stopid='${data['data'][i]['stop']}' data-bound='${bound}'
+                onclick='showAddOptions(this)'><button type="button" class="addbtn">⋮</button></td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};border-bottom: 3px solid black'/><td>--:--</td><td/></tr>`;
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -1067,13 +1143,26 @@ function getLastOpenTab(){
     document.getElementById(tabName).style.display = "block";
     setTimeout(function(){
         document.getElementById(tabName).className += " current";
-    },1);
+    },1 );
 }
 function checkCookie() {
     let lang = getCookie("lang");
     if (lang == "" || lang == null){
-        var loading = document.getElementById("setLang");
-        loading.classList.toggle("hidden-lang");
+        createOverlay();
+        const langPopup = document.createElement('div');
+        langPopup.setAttribute("id", "setLang");
+        langPopup.classList.add("top");
+        document.body.appendChild(langPopup);
+        $('#setLang').append( `<br>
+        <button type="button" class="langbtn" onclick="setLang180('en');">English</button>
+        <br>
+        <button type="button" class="langbtn" onclick="setLang180('de');">Deutsch</button>
+        <br>
+        <button type="button" class="langbtn" onclick="setLang180('ch')";>中文</button>
+        <br>
+        <button type="button" class="langbtn" onclick="setLang180('ja')";>日本語</button>
+        <br><br>`
+        );
         setTimeout(langTimeout,10000);
     }   
     else if(lang != 'de'){
@@ -1081,7 +1170,15 @@ function checkCookie() {
         changeLang(lang);
     }
 }
-
+function createOverlay(){
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+    document.body.appendChild(overlay);
+}
+function removeOverlay(){
+    const overlay = document.querySelector('.overlay');
+    document.body.removeChild(overlay);
+}
 function setLang180(lang){
     var loading = document.getElementById("setLang");
     loading.classList.toggle("hidden-lang");  
@@ -1090,8 +1187,8 @@ function setLang180(lang){
 }
 
 function langTimeout(){
-    var loading = document.getElementById("setLang");
-    loading.classList.toggle("hidden-lang");  
+    $('#setLang').remove();
+    removeOverlay();
 }
 
 function setCookie(name,value,days) {
@@ -1185,6 +1282,8 @@ function changeLang(lang) {
     }
     cookieStops[cookieStops.length] = StopGroupArray;
     setCookieStops();
+    renderStops();
+    refreshHaltestellen();
   }
   function removeStopGroup(index){
     cookieStops.splice(index,1);
@@ -1243,6 +1342,8 @@ function changeLang(lang) {
         }     
     }
     setCookieStops();
+    renderStops();
+    refreshHaltestellen();
   }
   function removeRouteFromStopGroup(groupIndex, operator, stopID, route){
     if(operator=="kmb"){
@@ -1286,14 +1387,16 @@ function changeLang(lang) {
     refreshHaltestellen();
   }
   function confirmDeleteStopGroup(groupIndex){
-    $('#Haltestellen').append(`<div id="ConfirmDelGroup">
+    createOverlay();
+    $('#Haltestellen').append(`<div id="ConfirmDelGroup" class="top">
         <br>${getMessage("confirmDelGroup")}<br><br>
         <button type="button" class="confirmbtn" onclick="removeConfirm();deleteStopGroup(${groupIndex})">${getMessage("Ja")}</button>&ensp;
         <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Nein")}</button><br><br>
     </div>`);
   }
   function gruppeUmbenennen(groupIndex){
-    $('#Haltestellen').append(`<div id="ConfirmDelGroup">
+    createOverlay();
+    $('#Haltestellen').append(`<div id="ConfirmDelGroup" class="top">
         <br>${getMessage("renameGroup")}<br><br>
         <input id="myInput2" type="text" pattern="[A-Za-z0-9]" value="${cookieStops[groupIndex][0]}"/>
         <br><br><br>
@@ -1303,6 +1406,7 @@ function changeLang(lang) {
     document.getElementById('myInput2').select();
   }
   function removeConfirm(){
+    removeOverlay();
     $("#ConfirmDelGroup").remove();
   }
   function deleteStopGroup(groupIndex){
