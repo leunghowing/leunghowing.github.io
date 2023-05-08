@@ -235,7 +235,7 @@ body {
   background-color: #000000;
   text-align: center;
   color: #FFFFFF;
-  border-color: #000000;
+  border-color: #FFFFFF;
   border-radius: 5px;
 }
 
@@ -334,6 +334,29 @@ body {
   background-color: #111111;
   text-align: center;
   color: #FFFFFF;
-  border-color: #000000;
+  border-color: #FFFFFF;
 border-radius: 5px;
+}
+
+.addStopbtn {
+  height:20px;
+  font-size: 12px;
+  background-color: #000000;
+  text-align: left;
+  color: #FFFFFF;
+  padding: 15px;
+  border: 1px solid #222222;
+}
+
+#AddStopGroup {
+  background-color: #000000;
+  text-align: center;
+  width: 70vw;
+  max-width: 300px;
+  height:300px;
+  border-radius: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

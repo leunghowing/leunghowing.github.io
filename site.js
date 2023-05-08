@@ -103,7 +103,30 @@ var messages = {
     "Cancel-de": "Abbrechen",
     "Cancel-en": "Cancel",
     "Cancel-ch": "取消",
-    "Cancel-ja": "キャンセルする"
+    "Cancel-ja": "キャンセル",
+
+    "Route-de": "Route",
+    "Route-en": "Route",
+    "Route-ch": "路線",
+    "Route-ja": "ルート",
+
+    "Gruppehzfg-de": "Als neu zur Haltestelleliste hinzufügen",
+    "Gruppehzfg-en": "Add to stop list as new",
+    "Gruppehzfg-ch": "加入巴士站表",
+    "Gruppehzfg-ja": "バス停リストに追加",
+    "GruppehEntf-de": "Aus der Haltestelleliste entfernen.",
+    "GruppehEntf-en": "Remove from stop list",
+    "GruppehEntf-ch": "從巴士站表移除",
+    "GruppehEntf-ja": "バス停リストから削除",
+    "kmbhzfg-de": "Alle KMB-Linien dieser Hst. zur Liste hinzuf.",
+    "kmbhzfg-en": "Add all KMB-routes of this stop to stop list",
+    "kmbhzfg-ch": "新增此站所有九巴路線至巴士站表",
+    "kmbhzfg-ja": "すべてのKMBバス路線リストに追加",
+    "kmbentf-de": "Alle KMB-Linien dieser Hst. aus der Liste entf.",
+    "kmbentf-en": "Remove all KMB-routes from stop list",
+    "kmbentf-ch": "從巴士站表移除此站所有九巴路線",
+    "kmbentf-ja": "リストからすべてのKMBバス路線を削除"
+
 
 }
 
@@ -623,9 +646,10 @@ function PrejQueryRoutesAllOp(){
 }
 
 function newjQueryRoutesAllOpStage1(searchterm){
+    clearInterval(checkInterval);
     var loading = document.getElementById("LoadingAh");
-    loading.classList.toggle("hidden-load");
-    checkInterval = setInterval(checkjQueryReady,50,searchterm);
+    loading.classList.remove("hidden-load");
+    checkInterval = setInterval(checkjQueryReady,10,searchterm);
 }
 function checkjQueryReady(searchterm){
     if(isAllOpLoaded){
@@ -778,14 +802,14 @@ function jQueryRoutesAllOp(searchterm){
 function generateResults(data){
     //[route, dest, oper, bound, service-type (kmb)]
     let loading = document.getElementById("LoadingAh");
-    loading.classList.toggle("hidden-load");
+    loading.classList.add("hidden-load");
     let appending = "";
     $('#srchResults').html("");
     if(data.length> 0){
         for(let i=0;i<data.length;i++){
             if(data[i][2]=="kmb"){
                 appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='" + data[i][3] + "' data-op='kmb'" + "' data-service-type='" + data[i][4] + "'";
-                $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> Sonderfarht "+ (data[i][4] - 1) +"</span>") + "</td><tr>" );
+                $('#srchResults').append("<tr onclick='checkThisRoute(this)' " + appending +"><td style='border-left: 5px solid red;'>" + data[i][0] + "</td><td>" +  data[i][1] + (data[i][4] == 1? "":"<span style='font-size:9px'> "+getMessage("Route")+ (data[i][4] - 1) +"</span>") + "</td><tr>" );
             }
             else if(data[i][2]=="ctb" || data[i][2]=="nwfb"){
                 appending = "data-route='" + data[i][0] + `' data-dest='${data[i][1]}'`+ "' data-bound='"+ data[i][3]+"' data-op='"+ data[i][2] +"'";
@@ -829,6 +853,7 @@ function removePopup(){
 
 function getSearchRouteStops(route, bound, service_type){
     var response = "";
+    var routeString = (service_type == 1 ? route : route + '-' + service_type);
     $.ajax({
         type: 'GET',
         url:'https://data.etabus.gov.hk/v1/transport/kmb/route-stop/'+ route + "/" + (bound=='I'? "inbound" : "outbound") + "/" + service_type,
@@ -836,7 +861,9 @@ function getSearchRouteStops(route, bound, service_type){
         success: function(data){
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + "<tr><td style='background-color:red; border-bottom: 5px solid red'><span class='circle'/></td><td>"+getMessage("loading")+"</td><td>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>--:--</td><td/></tr>";
+                response = response + `<tr><td style='background-color:red; border-bottom: 5px solid red'><span class='circle'/></td><td>"+getMessage("loading")+"</td><td 
+                data-oper='kmb' data-route='${routeString}' data-stopid='${data['data'][i]['stop']}' data-bound='${bound}'
+                onclick='showAddOptions(this,"kmb")'>⋮</td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>- - : - -</td><td/></tr>`;
             }
             response = response + "</table>";
             $('#popupETA').html(response);
@@ -849,6 +876,25 @@ function getSearchRouteStops(route, bound, service_type){
         }
 
     });
+}
+function showAddOptions(element, kmbopt){
+    $('#Suche').append(`<div id="AddStopGroup"><br>
+    
+    <div class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg")}</div>
+    <div class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</div>
+    <div class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg")}</div>
+    <div class="addStopbtn" onclick="removeAdd();">${getMessage("kmbentf")}</div>
+    <div class="addStopbtn" onclick="removeAdd();">${getMessage("Cancel")}</div><br>
+    </div>`);
+    //stopName, operator, stopID, route
+    //kmb route : "route-service_type" if service type not 1
+    //console.log(oper, route, stopID, bound);
+}
+function removeAdd(){
+    $("#AddStopGroup").remove();
+}
+function chooseAdd(element){
+
 }
 
 function getSearchRouteStopsBravo(route, bound, oper){
@@ -981,7 +1027,7 @@ function getETAdata(route, bound, service_type){
                             response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min-B") +")";
                         }
                     }
-                    if(i < (data['data'].length -1) && data['data'][i+1]['eta_seq']==1){
+                    if(i < (data['data'].length -1) && data['data'][i+1]['seq']!=data['data'][i]['seq']){
                         j++;
                     }
                 }
