@@ -339,13 +339,14 @@ border-radius: 5px;
 }
 
 .addStopbtn {
-  height:20px;
+  width: 85%;
+  padding: 10px;
   font-size: 12px;
   background-color: #000000;
   text-align: left;
   color: #FFFFFF;
-  padding: 15px;
   border: 1px solid #222222;
+  border-width: 1px 0;
 }
 
 #AddStopGroup {

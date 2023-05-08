@@ -879,12 +879,12 @@ function getSearchRouteStops(route, bound, service_type){
 }
 function showAddOptions(element, kmbopt){
     $('#Suche').append(`<div id="AddStopGroup"><br>
-    
-    <div class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg")}</div>
-    <div class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</div>
-    <div class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg")}</div>
-    <div class="addStopbtn" onclick="removeAdd();">${getMessage("kmbentf")}</div>
-    <div class="addStopbtn" onclick="removeAdd();">${getMessage("Cancel")}</div><br>
+    <br>
+    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg")}</button><br>
+    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</button><br>
+    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg")}</button><br>
+    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbentf")}</button><br>
+    <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Cancel")}</button><br><br>
     </div>`);
     //stopName, operator, stopID, route
     //kmb route : "route-service_type" if service type not 1
