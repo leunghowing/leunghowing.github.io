@@ -329,7 +329,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
     var unsorted = [];
     var response = "";
     var j = 1;
-    if(kmbstopids){
+    if(kmbstopids.length > 0){
         for(var k=0; k < kmbstopids.length; k++){
             $.ajax({
                 type: 'GET',
