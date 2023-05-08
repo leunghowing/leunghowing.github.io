@@ -143,6 +143,11 @@ var messages = {
     "hzfgFertig-en": "Successfully added",
     "hzfgFertig-ch": "新增成功",
     "hzfgFertig-ja": "追加成功",
+    
+    "NoStops-de" : "Keine Halltestelle existiert auf der Liste",
+    "NoStops-en" : "No bus stop exists on the list",
+    "NoStops-ch" : "巴士站表並無任何車站",
+    "NoStops-ja" : "リストにバス停はありません",
 
 
 }
@@ -905,7 +910,7 @@ function showAddOptions(element, kmbopt){
         <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
         <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("Haltestellenliste")}</div>
         <button type="button" class="addStopbtn" data-oper="kmb" data-route='${route}' data-stopid='${stopid}' onclick="removeAddFertigMsg();gruppehzfg(this)">${getMessage("Gruppehzfg")}</button><br>
-        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg2")}</button><br>
+        <button type="button" class="addStopbtn" data-oper="kmb" data-route='${route}' data-stopid='${stopid}' onclick="gruppehzfg2(this)">${getMessage("Gruppehzfg2")}</button><br>
         <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</button><br>
         <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg")}</button><br>
         <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg2")}</button><br>
@@ -917,7 +922,7 @@ function showAddOptions(element, kmbopt){
         <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
         <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("Haltestellenliste")}</div>
         <button type="button" class="addStopbtn" data-oper="${oper}" data-route='${route}' data-stopid='${stopid}' onclick="removeAddFertigMsg();gruppehzfg(this)">${getMessage("Gruppehzfg")}</button><br>
-        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("Gruppehzfg2")}</button><br>
+        <button type="button" class="addStopbtn" data-oper="${oper}" data-route='${route}' data-stopid='${stopid}' onclick="gruppehzfg2(this)">${getMessage("Gruppehzfg2")}</button><br>
         <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("GruppehEntf")}</button><br><br><br>
         </div>`);
     }
@@ -951,6 +956,38 @@ function gruppehzfg(element){
         }
     });
 }
+function gruppehzfg2(element){
+    var oper = element.getAttribute("data-oper");
+    var route = element.getAttribute("data-route");
+    var stopid = element.getAttribute("data-stopid");
+
+    var buttonsString = `<div style='height=60px;padding: 70px 20px'>${getMessage("NoStops")}</div>`;
+    if(cookieStops.length>0){
+        buttonsString = "";
+        for(let i = 0 ; i < cookieStops.length; i ++){
+            buttonsString += `<button type="button" class="addStopbtn" data-oper="${oper}" data-route='${route}' data-stopid='${stopid}' data-index='${i}'
+             onclick="gruppehzfg3(this)">${cookieStops[i][0]}</button><br>`;
+        }
+    }
+
+    $("#AddStopGroup").remove();
+    $('#Suche').append(`<div id="AddStopGroup" class="top">
+    <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
+    <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("Gruppehzfg2")}</div>
+    ${buttonsString}
+    <br>
+    </div>`);
+
+}
+function gruppehzfg3(element){
+    var oper = element.getAttribute("data-oper");
+    var route = element.getAttribute("data-route");
+    var stopid = element.getAttribute("data-stopid");
+    var index = element.getAttribute("data-index");
+    addRouteToStopGroup(index, oper, stopid, route);
+    removeAddFertigMsg();
+}
+
 function removeAdd(){
     removeOverlay();
     $("#AddStopGroup").remove();

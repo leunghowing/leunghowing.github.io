@@ -369,6 +369,7 @@ body {
 #AddStopGroupFertig {
   background-color: #111111;
   text-align: center;
+  padding: 10px;
   width: 150px;
   height: 150px;
   border-radius: 10px;
