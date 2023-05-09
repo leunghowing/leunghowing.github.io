@@ -278,7 +278,17 @@ function getStopAsync(element, stopids, routes){
     var unsorted = [];
     var response = "";
     var j = 1;
+    var splitRoutes = [];
+    var splitSeqs = [];
+    if(routes){
+        for(let i = 0; i < routes.length; i++){
+            var splitRoute = routes[i].split("-");
+            splitRoutes[i] = splitRoute[1];
+            splitSeqs[i] = splitRoute[0];
+        }
+    }
     for(var k=0; k < stopids.length; k++){
+        console.log(stopids[k]);
         $.ajax({
             type: 'GET',
             url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/'+ stopids[k],
@@ -288,18 +298,19 @@ function getStopAsync(element, stopids, routes){
                     if(data['data'][i]['eta']!=null){
                         //if(routes.length>0)
                         if(routes){
-                                if(routes.includes(data['data'][i]['route'])){
-                                    let repeated = 0;
-                                    for(let l=0; l < unsorted.length; l ++){
-                                        if(unsorted[l]['route'] == data['data'][i]['route'] && unsorted[l]['eta'] == data['data'][i]['eta'] && unsorted[l]['eta_seq'] == data['data'][i]['eta_seq']){
-                                            repeated = 1;
+                                if(splitRoutes.includes(data['data'][i]['route']) ){
+                                    if(splitSeqs[splitRoutes.indexOf(data['data'][i]['route'])] == data['data'][i]['seq']){
+                                        let repeated = 0;
+                                        for(let l=0; l < unsorted.length; l ++){
+                                            if(unsorted[l]['route'] == data['data'][i]['route'] && unsorted[l]['eta'] == data['data'][i]['eta'] && unsorted[l]['eta_seq'] == data['data'][i]['eta_seq']){
+                                                repeated = 1;
+                                            }
+                                        }
+                                        if(!repeated){
+                                            unsorted[j-1] = data['data'][i]; 
+                                            j++;
                                         }
                                     }
-                                    if(!repeated){
-                                        unsorted[j-1] = data['data'][i]; 
-                                        j++;
-                                    }
-                                    
                                 }
                         }
                         else{
@@ -453,7 +464,7 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
                         return a.eta.localeCompare(b.eta);
                     });
                     response = addUpRoutes(unsorted);
-                    console.log("response:"+ response);
+                    //console.log("response:"+ response);
                     if(response == ""){
                         document.getElementById(element).innerHTML = getMessage("Nodata");
                     }
@@ -471,10 +482,10 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
 function getSingleRouteStopsAsync(route, bound, seq, stopnames){
     var response = [];
     var splitRoute = route.split("-");
-    var SvcType = splitRoute[1]==null? "1" : splitRoute[1];
+    var SvcType = splitRoute[2]==null? "1" : splitRoute[2];
     $.ajax({
         type: 'GET',
-        url:`https://data.etabus.gov.hk/v1/transport/kmb/route-eta/${splitRoute[0]}/${SvcType}`,
+        url:`https://data.etabus.gov.hk/v1/transport/kmb/route-eta/${splitRoute[1]}/${SvcType}`,
         dataType: 'json',
         success: function(data){
             let j = 0;
@@ -1326,13 +1337,13 @@ function changeLang(lang) {
   function getCookieStops(){
     var cookieString = getCookie('stops');
     if(cookieString == null || cookieString == ""){
-        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],\
+        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["5-307","14-680","4-681","16-673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],\
         ["EHC Südwarts",["9535298A652873DB"],["606","613"], ["001463"], ["608","606"], ["001463"], ["682","682B"]],\
         ["Sunway Gardens",["633C082A94176ED0"],["307P","678"],[],[],[],[]],\
         ["Opp Sunway Gardens",["75CE4282D2043790"],["606"],[],[],[],[]],\
         ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["307","680","681","307P","673","678","373"],[],[],[],[]],\
         ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["74B","74D","274X","74X","75X","307","307P"],[],[],[],[]]]',365);
-        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["307","680","681","673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],
+        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["5-307","14-680","4-681","16-673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],
         ["EHC Südwarts",["9535298A652873DB"],["606","613"], ["001463"], ["608","606"], ["001463"], ["682","682B"]],
         ["Sunway Gardens",["633C082A94176ED0"],["307P","678"],[],[],[],[]],["Opp Sunway Gardens",["75CE4282D2043790"],["606"],[],[],[],[]],
         ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["307","680","681","307P","673","678","373"],[],[],[],[]],
