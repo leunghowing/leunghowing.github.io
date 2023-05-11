@@ -32,6 +32,14 @@ var messages = {
     "loading-en": "Loading...",
     "loading-ch": "載入中...",
     "loading-ja": "読み込み中...",
+    "enter-de": "Liniennummer eingeben, um auf dem Liniennetz suchen.",
+    "enter-en": "Enter a route number to search from the network.",
+    "enter-ch": "輸入巴士路線號碼以供搜尋。",
+    "enter-ja": "読みバス系統番号を入力して検索します。",
+    "NoResults-de": "Keine Treffer",
+    "NoResults-en": "No search results",
+    "NoResults-ch": "無符合搜尋路線結果",
+    "NoResults-ja": "一致する検索結果がありません",
     
     "Min-de": "Min.",
     "Min-en": "min",
@@ -279,16 +287,17 @@ function getStopAsync(element, stopids, routes){
     var response = "";
     var j = 1;
     var splitRoutes = [];
-    var splitSeqs = [];
+    var splitBounds = [];
     if(routes){
         for(let i = 0; i < routes.length; i++){
             var splitRoute = routes[i].split("-");
             splitRoutes[i] = splitRoute[1];
-            splitSeqs[i] = splitRoute[0];
+            splitBounds[i] = splitRoute[0];
         }
     }
+    //console.log(splitSeqs, splitRoutes, routes)
     for(var k=0; k < stopids.length; k++){
-        console.log(stopids[k]);
+        //console.log(stopids[k]);
         $.ajax({
             type: 'GET',
             url:'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/'+ stopids[k],
@@ -298,18 +307,16 @@ function getStopAsync(element, stopids, routes){
                     if(data['data'][i]['eta']!=null){
                         //if(routes.length>0)
                         if(routes){
-                                if(splitRoutes.includes(data['data'][i]['route']) ){
-                                    if(splitSeqs[splitRoutes.indexOf(data['data'][i]['route'])] == data['data'][i]['seq']){
-                                        let repeated = 0;
-                                        for(let l=0; l < unsorted.length; l ++){
-                                            if(unsorted[l]['route'] == data['data'][i]['route'] && unsorted[l]['eta'] == data['data'][i]['eta'] && unsorted[l]['eta_seq'] == data['data'][i]['eta_seq']){
-                                                repeated = 1;
-                                            }
+                                if(splitRoutes.includes(data['data'][i]['route']) && splitBounds[splitRoutes.indexOf(data['data'][i]['route'])] == data['data'][i]['dir']){
+                                    let repeated = 0;
+                                    for(let l=0; l < unsorted.length; l ++){
+                                        if(unsorted[l]['route'] == data['data'][i]['route'] && unsorted[l]['eta'] == data['data'][i]['eta'] && unsorted[l]['eta_seq'] == data['data'][i]['eta_seq']){
+                                            repeated = 1;
                                         }
-                                        if(!repeated){
-                                            unsorted[j-1] = data['data'][i]; 
-                                            j++;
-                                        }
+                                    }
+                                    if(!repeated){
+                                        unsorted[j-1] = data['data'][i]; 
+                                        j++;
                                     }
                                 }
                         }
@@ -345,10 +352,20 @@ function getStopAsync(element, stopids, routes){
 }
 
 
-function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ctbroutes, nwftstopids, nwfbroutes){
+function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ctbroutes, nwfbstopids, nwfbroutes){
     var unsorted = [];
     var response = "";
     var j = 1;
+    var splitkmbRoutes = [];
+    var splitkmbBounds = [];
+    if(kmbroutes.length>0){
+        for(let i = 0; i < kmbroutes.length; i++){
+            var splitkmbRoute = kmbroutes[i].split("-");
+            splitkmbRoutes[i] = splitkmbRoute[1];
+            splitkmbBounds[i] = splitkmbRoute[0];
+        }
+    }
+    //console.log(kmbroutes, ctbroutes, nwfbroutes);
     if(kmbstopids.length > 0){
         for(var k=0; k < kmbstopids.length; k++){
             $.ajax({
@@ -360,7 +377,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                         if(data['data'][i]['eta']!=null){
                             //if(kmbroutes.length>0)
                             if(kmbroutes){
-                                    if(kmbroutes.includes(data['data'][i]['route'])){
+                                    if(splitkmbRoutes.includes(data['data'][i]['route']) && splitkmbBounds[splitkmbRoutes.indexOf(data['data'][i]['route'])] == data['data'][i]['dir']){
                                         let repeated = 0;
                                         for(let l=0; l < unsorted.length; l ++){
                                             if(unsorted[l]['route'] == data['data'][i]['route'] && unsorted[l]['eta'] == data['data'][i]['eta'] && unsorted[l]['eta_seq'] == data['data'][i]['eta_seq']){
@@ -388,13 +405,13 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                             }
                         }
                     }
-                    if(ctbstopids.length > 0  || nwftstopids.length > 0){
+                    if(ctbstopids.length > 0  || nwfbstopids.length > 0){
                         if(ctbstopids.length > 0){ //ctbstopids is an array and ctbroutes is a 2D array
                             addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
                 
                         }
-                        if(nwftstopids.length > 0){
-                            addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
+                        if(nwfbstopids.length > 0){
+                            addBravoToStop(unsorted,"NWFB", nwfbstopids, nwfbroutes, element);
                         }
                     }
                     else{
@@ -420,8 +437,8 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
         if(ctbstopids.length > 0){
             addBravoToStop(unsorted,"CTB", ctbstopids, ctbroutes, element); 
         }
-        if(nwftstopids.length > 0){
-            addBravoToStop(unsorted,"NWFB", nwftstopids, nwfbroutes, element);
+        if(nwfbstopids.length > 0){
+            addBravoToStop(unsorted,"NWFB", nwfbstopids, nwfbroutes, element);
         }
     }
 
@@ -431,22 +448,33 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
 //TODO
 function addBravoToStop(unsorted, company, stopids, routes, element){
     //001986
+    console.log(routes);
     if(unsorted==null){
         unsorted = [];
+    }
+    var splitRoutes = [];
+    var splitBounds = [];
+    if(routes.length>0){
+        for(let i = 0; i < routes.length; i++){
+            var splitRoute = routes[i].split("-");
+            splitRoutes[i] = splitRoute[1];
+            splitBounds[i] = splitRoute[0];
+        }
     }
     for(let i=0; i < stopids.length; i++){
         for(let j=0; j < routes.length; j++){
             $.ajax({
                 type: 'GET',
-                url:'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopids[i] + '/' + routes[j],
+                url:'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopids[i] + '/' + splitRoutes[j],
                 dataType: 'json',
                 success: function(data){
                     //console.log(data['data'].length);
-                    //console.log('https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopids[i] + '/' + routes[j]);
+                    //console.log('https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopids[i] + '/' + splitRoutes[j]);
                     for(let k = 0; k < data['data'].length; k++ ){
-                        //console.log( data['data'][i]['eta']);
+                        console.log(data['data'][k]['route'],data['data'][k]['dir'])
                         if(data['data'][k]['eta']!=""){
-                            if(routes.includes(data['data'][k]['route'])){
+                            if(splitRoutes.includes(data['data'][k]['route']) && splitBounds[splitRoutes.indexOf(data['data'][i]['route'])] == data['data'][k]['dir']){
+                                console.log("happy");
                                 let repeated = 0;
                                 for(let l=0; l < unsorted.length; l ++){
                                     if(unsorted[l]['route'] == data['data'][k]['route'] && unsorted[l]['eta'] == data['data'][k]['eta'] && unsorted[l]['eta_seq'] == data['data'][k]['eta_seq']){
@@ -855,6 +883,9 @@ function generateResults(data){
             }
         }
     }
+    else{
+        $('#srchResults').html(`<tr><td style="text-align:center">${getMessage("NoResults")}</td></tr>`);
+    }
 }
 
 function checkThisRoute(theRoute){
@@ -899,8 +930,8 @@ function getSearchRouteStops(route, bound, service_type){
         success: function(data){
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
-                response = response + `<tr><td style='background-color:red; border-bottom: 5px solid red'><span class='circle'/></td><td>"+getMessage("loading")+"</td><td 
-                data-oper='kmb' data-route='${routeString}' data-stopid='${data['data'][i]['stop']}' data-bound='${bound}'
+                response = response + `<tr><td style='background-color:red; border-bottom: 5px solid red'><span onclick='addToLinien(this)' class='circle'/></td><td>"+getMessage("loading")+"</td><td 
+                data-oper='kmb' data-route='${bound}-${routeString}' data-stopid='${data['data'][i]['stop']}'
                 onclick='showAddOptions(this,"kmb")'><button type="button" class="addbtn">⋮</button></td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>- - : - -</td><td/></tr>`;
             }
             response = response + "</table>";
@@ -915,10 +946,19 @@ function getSearchRouteStops(route, bound, service_type){
 
     });
 }
+function addToLinien(element){
+    if(element.innerHTML == ""){
+        element.innerHTML = "✓";
+    }
+    else{
+        element.innerHTML = "";
+    }
+}
 function showAddOptions(element, kmbopt){
     var oper = element.getAttribute("data-oper");
-    var route = element.getAttribute("data-route");
+    var route = element.getAttribute("data-route"); //routeString: bound + route + service type (KMB)
     var stopid = element.getAttribute("data-stopid");
+    console.log(route);
     createOverlay();
     if(kmbopt){
         $('#Suche').append(`<div id="AddStopGroup" class="top">
@@ -927,9 +967,9 @@ function showAddOptions(element, kmbopt){
         <button type="button" class="addStopbtn" data-oper="kmb" data-route='${route}' data-stopid='${stopid}' onclick="removeAddFertigMsg();gruppehzfg(this)">${getMessage("Gruppehzfg")}</button><br>
         <button type="button" class="addStopbtn" data-oper="kmb" data-route='${route}' data-stopid='${stopid}' onclick="gruppehzfg2(this)">${getMessage("Gruppehzfg2")}</button><br>
         <button type="button" class="addStopbtn" data-oper="kmb" data-route='${route}' data-stopid='${stopid}' onclick="gruppeentf(this)">${getMessage("GruppehEntf")}</button><br>
-        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg")}</button><br>
-        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbhzfg2")}</button><br>
-        <button type="button" class="addStopbtn" onclick="removeAdd();">${getMessage("kmbentf")}</button><br><br><br>
+        <button type="button" class="addStopbtn" data-stopid='${stopid}' onclick="removeAddFertigMsg(); gruppehzfgkmb(this);">${getMessage("kmbhzfg")}</button><br>
+        <button type="button" class="addStopbtn" data-stopid='${stopid}' onclick="gruppehzfg2kmb(this);">${getMessage("kmbhzfg2")}</button><br>
+        <button type="button" class="addStopbtn" data-stopid='${stopid}' onclick="gruppehEntfkmb(this);">${getMessage("kmbentf")}</button><br><br><br>
         </div>`);
     }
     else{
@@ -971,6 +1011,22 @@ function gruppehzfg(element){
         }
     });
 }
+function gruppehzfgkmb(element){
+    var stopid = element.getAttribute("data-stopid");
+    var link ='https://data.etabus.gov.hk/v1/transport/kmb/stop/';
+    var en_name, ch_name;
+    $.ajax({
+        type: 'GET',
+        url: link + stopid,
+        dataType: 'json',
+        success: function(data){
+            en_name = data['data']['name_en'];
+            ch_name = data['data']['name_tc'];
+            addStopGroup(ch_name, "kmb", stopid);
+
+        }
+    });
+}
 function gruppehzfg2(element){
     var oper = element.getAttribute("data-oper");
     var route = element.getAttribute("data-route");
@@ -989,7 +1045,31 @@ function gruppehzfg2(element){
     $('#Suche').append(`<div id="AddStopGroup" class="top">
     <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
     <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("Gruppehzfg2")}</div>
+    <div style="max-height:75vh;overflow-y:auto">
     ${buttonsString}
+    </div>
+    <br>
+    </div>`);
+
+}
+function gruppehzfg2kmb(element){
+    var stopid = element.getAttribute("data-stopid");
+    var buttonsString = `<div style='height=60px;padding: 70px 20px'>${getMessage("NoStops")}</div>`;
+    if(cookieStops.length > 0){
+        buttonsString = "";
+        for(let i = 0 ; i < cookieStops.length; i ++){
+            buttonsString += `<button type="button" class="addStopbtn" data-stopid='${stopid}' data-index='${i}'
+             onclick="gruppehzfg3kmb(this)">${cookieStops[i][0]}</button><br>`;
+        }
+    }
+
+    $("#AddStopGroup").remove();
+    $('#Suche').append(`<div id="AddStopGroup" class="top">
+    <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
+    <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("kmbhzfg2")}</div>
+    <div style="max-height:75vh;overflow-y:auto">
+    ${buttonsString}
+    </div>
     <br>
     </div>`);
 
@@ -1002,11 +1082,16 @@ function gruppehzfg3(element){
     addRouteToStopGroup(index, oper, stopid, route);
     removeAddFertigMsg();
 }
+function gruppehzfg3kmb(element){
+    var stopid = element.getAttribute("data-stopid");
+    var index = element.getAttribute("data-index");
+    addRouteToStopGroup(index, "kmb", stopid);
+    removeAddFertigMsg();
+}
 function gruppeentf(element){
     var oper = element.getAttribute("data-oper");
-    var route = element.getAttribute("data-route");
     var stopid = element.getAttribute("data-stopid");
-
+    var route = element.getAttribute("data-route");
     var buttonsString = `<div style='height=60px;padding: 70px 20px'>${getMessage("NoStops")}</div>`;
     if(cookieStops.length>0){
         buttonsString = "";
@@ -1020,7 +1105,31 @@ function gruppeentf(element){
     $('#Suche').append(`<div id="AddStopGroup" class="top">
     <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
     <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("GruppehEntf")}</div>
+    <div style="max-height:75vh;overflow-y:auto">
     ${buttonsString}
+    </div>
+    <br>
+    </div>`);
+}
+function gruppeentfkmb(element){
+    var stopid = element.getAttribute("data-stopid");
+
+    var buttonsString = `<div style='height=60px;padding: 70px 20px'>${getMessage("NoStops")}</div>`;
+    if(cookieStops.length>0){
+        buttonsString = "";
+        for(let i = 0 ; i < cookieStops.length; i ++){
+            buttonsString += `<button type="button" class="addStopbtn" data-stopid='${stopid}' data-index='${i}'
+             onclick="gruppeentf2kmb(this)">${cookieStops[i][0]}</button><br>`;
+        }
+    }
+
+    $("#AddStopGroup").remove();
+    $('#Suche').append(`<div id="AddStopGroup" class="top">
+    <table style='width:100%'><td><td style='width:20px' onclick="removeAdd();">✖</td></tr></table>
+    <div style="text-align:left; border: 1px solid #333; border-width:0 0 1px; padding:10px 20px 30px">${getMessage("kmbentf")}</div>
+    <div style="max-height:75vh;overflow-y:auto">
+    ${buttonsString}
+    </div>
     <br>
     </div>`);
 }
@@ -1030,6 +1139,12 @@ function gruppeentf2(element){
     var stopid = element.getAttribute("data-stopid");
     var index = element.getAttribute("data-index");
     removeRouteFromStopGroup(index, oper, stopid, route);
+    removeRemoveFertigMsg();
+}
+function gruppeentf2kmb(element){
+    var stopid = element.getAttribute("data-stopid");
+    var index = element.getAttribute("data-index");
+    removeRouteFromStopGroup(index, "kmb", stopid);
     removeRemoveFertigMsg();
 }
 
@@ -1078,7 +1193,7 @@ function getSearchRouteStopsBravo(route, bound, oper){
             response = "<table id='Hahatable'>";
             for(var i = 0; i < data['data'].length; i++ ){
                 response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}'><span class='circle'/></td><td>${getMessage("loading")}</td><td
-                data-oper='${oper}' data-route='${route}' data-stopid='${data['data'][i]['stop']}' data-bound='${bound}'
+                data-oper='${oper}' data-route='${oneCharBound}-${route}' data-stopid='${data['data'][i]['stop']}'
                 onclick='showAddOptions(this)'><button type="button" class="addbtn">⋮</button></td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};border-bottom: 3px solid black'/><td>--:--</td><td/></tr>`;
             }
             response = response + "</table>";
@@ -1135,7 +1250,7 @@ function getStopETABravo(stopid, stopseq, route, bound, oper){
     });
 }
 function getStopETAAgain(data, route,bound,oper){
-    console.log("HiHi, data:" + data);
+    //console.log("HiHi, data:" + data);
     for(var i = 0; i < data.length; i++ ){
         getStopETABravo(data[i],i,route,bound,oper);
     }
@@ -1259,7 +1374,7 @@ function checkCookie() {
         setTimeout(langTimeout,10000);
     }   
     else if(lang != 'de'){
-        console.log("changing language");
+        //console.log("changing language");
         changeLang(lang);
     }
 }
@@ -1337,17 +1452,17 @@ function changeLang(lang) {
   function getCookieStops(){
     var cookieString = getCookie('stops');
     if(cookieString == null || cookieString == ""){
-        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["5-307","14-680","4-681","16-673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],\
-        ["EHC Südwarts",["9535298A652873DB"],["606","613"], ["001463"], ["608","606"], ["001463"], ["682","682B"]],\
-        ["Sunway Gardens",["633C082A94176ED0"],["307P","678"],[],[],[],[]],\
-        ["Opp Sunway Gardens",["75CE4282D2043790"],["606"],[],[],[],[]],\
-        ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["307","680","681","307P","673","678","373"],[],[],[],[]],\
-        ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["74B","74D","274X","74X","75X","307","307P"],[],[],[],[]]]',365);
-        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["5-307","14-680","4-681","16-673"], ["001986"] , ["307","681"], ["001986"], ["682", "682B"]],
-        ["EHC Südwarts",["9535298A652873DB"],["606","613"], ["001463"], ["608","606"], ["001463"], ["682","682B"]],
-        ["Sunway Gardens",["633C082A94176ED0"],["307P","678"],[],[],[],[]],["Opp Sunway Gardens",["75CE4282D2043790"],["606"],[],[],[],[]],
-        ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["307","680","681","307P","673","678","373"],[],[],[],[]],
-        ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["74B","74D","274X","74X","75X","307","307P"],[],[],[],[]]];
+        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["O-307","O-680","I-681","O-673"], ["001986"] , ["O-307","I-681"], ["001986"], ["I-682", "I-682B"]],\
+        ["EHC Südwarts",["9535298A652873DB"],["O-606","O-606-2"","O-613"], ["001463"], ["O-608","O-606"], ["001463"], ["I-682","I-682B"]],\
+        ["Sunway Gardens",["633C082A94176ED0"],["I-307P","I-678"],[],[],[],[]],\
+        ["Opp Sunway Gardens",["75CE4282D2043790"],["I-606"],[],[],[],[]],\
+        ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["I-307","I-680","I-681","I-307P","I-673","I-678"],[],[],[],[]],\
+        ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["I-74B","I-74D","I-274X","I-74X","I-75X","I-307","I-307P"],[],[],[],[]]]',365);
+        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["O-307","O-680","I-681","O-673"], ["001986"] , ["O-307","I-681"], ["001986"], ["I-682", "I-682B"]],
+        ["EHC Südwarts",["9535298A652873DB"],["O-606","O-606-2","O-613"], ["001463"], ["O-608","O-606"], ["001463"], ["I-682","I-682B"]],
+        ["Sunway Gardens",["633C082A94176ED0"],["I-307P","I-678"],[],[],[],[]],["Opp Sunway Gardens",["75CE4282D2043790"],["I-606"],[],[],[],[]],
+        ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["I-307","I-680","I-681","I-307P","I-673","I-678"],[],[],[],[]],
+        ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["I-74B","I-74D","I-274X","I-74X","I-75X","I-307","I-307P"],[],[],[],[]]];
     }
     else{
         cookieStops = JSON.parse(cookieString);

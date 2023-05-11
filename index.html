@@ -82,7 +82,7 @@
             <div class="wrap1">
                 <div class="srchdiv">
                 <div class="loading hidden-load" id="LoadingAh"></div>
-                <table id="srchResults"></table>
+                <table id="srchResults"><tr><td data-content="enter" style="text-align:center">Liniennummer eingeben, um auf dem Liniennetz suchen.</td></tr></table>
                 </div>
             </div>
         </div>
@@ -127,9 +127,9 @@ function getTime(firstload){
 }
 
 function refreshLinien(){
-    getSingleRouteStopsAsync("75K","I",[1,2,3,4,5,7,8],["TPM75K","TPHMkt75K","PHSt75K","PHBrdg75K","WingFldGdn75K","FHEst75K","YeeNgaCt75K"]);
-    getSingleRouteStopsAsync("307","O",[2,3,4,5],["CivicCtr307","PHSt307","WTKLn307","KFEst307"]);
-    getSingleRouteStopsAsync("74X","O",[2,3,4,5],["OnCheungRd74X","KFRd74X","WTKLn74X","KFEst74X"]);
+    getSingleRouteStopsAsync("1-75K","I",[1,2,3,4,5,7,8],["TPM75K","TPHMkt75K","PHSt75K","PHBrdg75K","WingFldGdn75K","FHEst75K","YeeNgaCt75K"]);
+    getSingleRouteStopsAsync("1-307","O",[2,3,4,5],["CivicCtr307","PHSt307","WTKLn307","KFEst307"]);
+    getSingleRouteStopsAsync("1-74X","O",[2,3,4,5],["OnCheungRd74X","KFRd74X","WTKLn74X","KFEst74X"]);
 
 }
 
@@ -191,6 +191,9 @@ $(document).ready(function(){
         if($('#myInput').val() != ""){
             var searchterm = $('#myInput').val().toUpperCase();
             newjQueryRoutesAllOpStage1(searchterm);
+        }
+        else{
+            $('#srchResults').html(`<tr><td style="text-align:center">${getMessage('enter')}</td></tr>`);
         }
     });
 
