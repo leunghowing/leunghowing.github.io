@@ -30,6 +30,7 @@
 </div>
   
 <div id="Linien" class="tabcontent">
+    <div id="routeTesting"></div>
     <div class="LinienModul">
         <span class="LinieNr">307</span>
         <div class="haltestelle">
@@ -102,7 +103,9 @@ var tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage(
 function init(){
     getLastOpenTab();
     getCookieStops();
+    getCookieRoutes();
     renderStops();
+    //renderRoutes();
     checkCookie();
     getTime(1);
     setInterval(getTime,1000);
@@ -143,6 +146,14 @@ function renderStops(){
         appending = appending + renderOneStop(i,cookieStops[i][0]);
     }
      $("#testingGround").html(appending);
+
+}
+function renderRoutes(){
+    var appending = '';
+    for(var i = 0; i < cookieStops.length; i++){
+        appending = appending + renderOneRoute(i,cookieRoutes[i][0]);
+    }
+     $("#routeTesting").html(appending);
 
 }
 function renderOneStop(index, name){

@@ -4,6 +4,7 @@ var dispLang ="";
 var isAllOpLoaded = false;
 var checkInterval;
 var cookieStops = [];
+var cookieRoutes = [];
 var allRouteData = [];
 var BravoDay = new Date(1688137200000);
 var Today = new Date();
@@ -375,8 +376,8 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
                 success: function(data){
                     for(var i = 0; i < data['data'].length; i++ ){ 
                         if(data['data'][i]['eta']!=null){
-                            //if(kmbroutes.length>0)
-                            if(kmbroutes){
+                            if(kmbroutes.length>0){
+                            //if(kmbroutes){
                                     if(splitkmbRoutes.includes(data['data'][i]['route']) && splitkmbBounds[splitkmbRoutes.indexOf(data['data'][i]['route'])] == data['data'][i]['dir']){
                                         let repeated = 0;
                                         for(let l=0; l < unsorted.length; l ++){
@@ -471,10 +472,10 @@ function addBravoToStop(unsorted, company, stopids, routes, element){
                     //console.log(data['data'].length);
                     //console.log('https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + company + '/' + stopids[i] + '/' + splitRoutes[j]);
                     for(let k = 0; k < data['data'].length; k++ ){
-                        console.log(data['data'][k]['route'],data['data'][k]['dir'])
+                        //console.log(data['data'][k]['route'],data['data'][k]['dir'])
                         if(data['data'][k]['eta']!=""){
                             if(splitRoutes.includes(data['data'][k]['route']) && splitBounds[splitRoutes.indexOf(data['data'][i]['route'])] == data['data'][k]['dir']){
-                                console.log("happy");
+                                //console.log("happy");
                                 let repeated = 0;
                                 for(let l=0; l < unsorted.length; l ++){
                                     if(unsorted[l]['route'] == data['data'][k]['route'] && unsorted[l]['eta'] == data['data'][k]['eta'] && unsorted[l]['eta_seq'] == data['data'][k]['eta_seq']){
@@ -969,7 +970,7 @@ function showAddOptions(element, kmbopt){
         <button type="button" class="addStopbtn" data-oper="kmb" data-route='${route}' data-stopid='${stopid}' onclick="gruppeentf(this)">${getMessage("GruppehEntf")}</button><br>
         <button type="button" class="addStopbtn" data-stopid='${stopid}' onclick="removeAddFertigMsg(); gruppehzfgkmb(this);">${getMessage("kmbhzfg")}</button><br>
         <button type="button" class="addStopbtn" data-stopid='${stopid}' onclick="gruppehzfg2kmb(this);">${getMessage("kmbhzfg2")}</button><br>
-        <button type="button" class="addStopbtn" data-stopid='${stopid}' onclick="gruppehEntfkmb(this);">${getMessage("kmbentf")}</button><br><br><br>
+        <button type="button" class="addStopbtn" data-stopid='${stopid}' onclick="gruppeentfkmb(this);">${getMessage("kmbentf")}</button><br><br><br>
         </div>`);
     }
     else{
@@ -1452,20 +1453,34 @@ function changeLang(lang) {
   function getCookieStops(){
     var cookieString = getCookie('stops');
     if(cookieString == null || cookieString == ""){
-        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["O-307","O-680","I-681","O-673"], ["001986"] , ["O-307","I-681"], ["001986"], ["I-682", "I-682B"]],\
-        ["EHC Südwarts",["9535298A652873DB"],["O-606","O-606-2"","O-613"], ["001463"], ["O-608","O-606"], ["001463"], ["I-682","I-682B"]],\
+        setCookie('stops','[["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"],["O-307","O-680","I-681","O-673"],["001986"],["O-307","I-681"],["001986"],["I-682", "O-682B"]],\
+        ["EHC Südwarts",["9535298A652873DB"],["O-606","O-606-2","O-613"], ["001463"], ["O-608","O-606"], ["001463"], ["I-682","O-682B"]],\
         ["Sunway Gardens",["633C082A94176ED0"],["I-307P","I-678"],[],[],[],[]],\
         ["Opp Sunway Gardens",["75CE4282D2043790"],["I-606"],[],[],[],[]],\
         ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["I-307","I-680","I-681","I-307P","I-673","I-678"],[],[],[],[]],\
         ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["I-74B","I-74D","I-274X","I-74X","I-75X","I-307","I-307P"],[],[],[],[]]]',365);
-        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"], ["O-307","O-680","I-681","O-673"], ["001986"] , ["O-307","I-681"], ["001986"], ["I-682", "I-682B"]],
-        ["EHC Südwarts",["9535298A652873DB"],["O-606","O-606-2","O-613"], ["001463"], ["O-608","O-606"], ["001463"], ["I-682","I-682B"]],
+        cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"],["O-307","O-680","I-681","O-673"], ["001986"] , ["O-307","I-681"], ["001986"], ["I-682", "O-682B"]],
+        ["EHC Südwarts",["9535298A652873DB"],["O-606","O-606-2","O-613"], ["001463"], ["O-608","O-606"], ["001463"], ["I-682","O-682B"]],
         ["Sunway Gardens",["633C082A94176ED0"],["I-307P","I-678"],[],[],[],[]],["Opp Sunway Gardens",["75CE4282D2043790"],["I-606"],[],[],[],[]],
         ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["I-307","I-680","I-681","I-307P","I-673","I-678"],[],[],[],[]],
         ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["I-74B","I-74D","I-274X","I-74X","I-75X","I-307","I-307P"],[],[],[],[]]];
     }
     else{
         cookieStops = JSON.parse(cookieString);
+    }
+  }
+  function getCookieRoutes(){
+    var cookieString = getCookie('routes');
+    if(cookieString == null || cookieString == ""){
+        setCookie('routes','',365);
+        cookieRoutes = [["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],
+        ["O-74X","kmb",[[1,2,3,4,5]],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
+        ["O-307","kmb",[[1,2,3,4,5]],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
+        ["O-307","ctb",[[1,2,3,4,5]],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]]
+    ];
+    }
+    else{
+        cookieRoutes = JSON.parse(cookieString);
     }
   }
   function setCookieStops(){
