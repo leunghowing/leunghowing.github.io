@@ -9,6 +9,7 @@ var allRouteData = [];
 var BravoDay = new Date(1688137200000);
 var Today = new Date();
 var isBravoDay = Today>BravoDay? true: false;
+var timeoutjob;
 var messages = {
     "Busse-de": "Busse",
     "Busse-en": "Buses",
@@ -97,6 +98,10 @@ var messages = {
     "confirmDelGroup-en": "Do you really want to delete this stop?",
     "confirmDelGroup-ch": "確認刪除此站？",
     "confirmDelGroup-ja": "このバス停を削除しますか?",
+    "confirmDelLine-de": "Möchten Sie diese Linie wirklich löschen?",
+    "confirmDelLine-en": "Do you really want to delete this route?",
+    "confirmDelLine-ch": "確認刪除路線？",
+    "confirmDelLine-ja": "この路線を削除しますか?",
     "renameGroup-de": "Haltestelle umbenennen:",
     "renameGroup-en": "Rename Stop:",
     "renameGroup-ch": "重新命名此站:",
@@ -140,8 +145,8 @@ var messages = {
     "kmbhzfg-ch": "新增此站所有九巴路線至巴士站表",
     "kmbhzfg-ja": "すべてのKMBバス路線リストに追加",
     "kmbhzfg2-de": "Alle KMB-Linien dieser Haltestelle zu bestehender Haltestelle hinzufügen",
-    "kmbhzfg2-en": "Add all KMB-routes of this existing stop into list",
-    "kmbhzfg2-ch": "新增此站所有九巴路線至巴士站表",
+    "kmbhzfg2-en": "Add all KMB-routes of this stop into existing stop in list",
+    "kmbhzfg2-ch": "新增此站所有九巴路線至巴士站表內車站",
     "kmbhzfg2-ja": "リスト既存のバス停に、すべてのKMBバス路線追加",
     "kmbentf-de": "Alle KMB-Linien dieser Haltestelle aus der Liste entfernen",
     "kmbentf-en": "Remove all KMB-routes from stop list",
@@ -449,7 +454,7 @@ function getStopAsyncAllOperators(element, kmbstopids, kmbroutes, ctbstopids, ct
 //TODO
 function addBravoToStop(unsorted, company, stopids, routes, element){
     //001986
-    console.log(routes);
+    //console.log(routes);
     if(unsorted==null){
         unsorted = [];
     }
@@ -1372,7 +1377,7 @@ function checkCookie() {
         <button type="button" class="langbtn" onclick="setLang180('ja')";>日本語</button>
         <br><br>`
         );
-        setTimeout(langTimeout,10000);
+        timeoutjob = setTimeout(langTimeout,10000);
     }   
     else if(lang != 'de'){
         //console.log("changing language");
@@ -1392,7 +1397,13 @@ function setLang180(lang){
     var loading = document.getElementById("setLang");
     loading.classList.toggle("hidden-lang");  
     setCookie('lang',lang,180);
-    location.reload();
+    dispLang = lang;
+    changeLang(lang);
+    removeOverlay();
+    clearTimeout(timeoutjob);
+    renderStops();
+    tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage("Zeit") +"</th><th>"+ getMessage("Ziel") +"</th><th><span style='font-size:12px'>"+ getMessage("Abfahrt") +"</span></th></tr>";
+    refreshHaltestellen();
 }
 
 function langTimeout(){
@@ -1458,7 +1469,7 @@ function changeLang(lang) {
         ["Sunway Gardens",["633C082A94176ED0"],["I-307P","I-678"],[],[],[],[]],\
         ["Opp Sunway Gardens",["75CE4282D2043790"],["I-606"],[],[],[],[]],\
         ["EHC Nördwarts",["991E47DBD416B908","D678B3364437D16B"],["I-307","I-680","I-681","I-307P","I-673","I-678"],[],[],[],[]],\
-        ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["I-74B","I-74D","I-274X","I-74X","I-75X","I-307","I-307P"],[],[],[],[]]]',365);
+        ["Tate\'s Cairn Tunnel Nördwarts",["9274EF6791CA3ED8"],["I-74B","I-74D","I-274X","I-74X","I-75X","I-307","I-307P"],[],[],[],[]]]',180);
         cookieStops = [["Lo Tsz Tin", ["9AB9D810103D8382","6EAC23CB146AE03C"],[],[],[],[],[]],["Tate\'s Cairn Tunnel Südwarts",["FFBEBD7068E01EA4"],["O-307","O-680","I-681","O-673"], ["001986"] , ["O-307","I-681"], ["001986"], ["I-682", "O-682B"]],
         ["EHC Südwarts",["9535298A652873DB"],["O-606","O-606-2","O-613"], ["001463"], ["O-608","O-606"], ["001463"], ["I-682","O-682B"]],
         ["Sunway Gardens",["633C082A94176ED0"],["I-307P","I-678"],[],[],[],[]],["Opp Sunway Gardens",["75CE4282D2043790"],["I-606"],[],[],[],[]],
@@ -1472,12 +1483,14 @@ function changeLang(lang) {
   function getCookieRoutes(){
     var cookieString = getCookie('routes');
     if(cookieString == null || cookieString == ""){
-        setCookie('routes','',365);
+        setCookie('routes',`[["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],
+        ["O-74X","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
+        ["O-307","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
+        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]]]`,180);
         cookieRoutes = [["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],
-        ["O-74X","kmb",[[1,2,3,4,5]],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
-        ["O-307","kmb",[[1,2,3,4,5]],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
-        ["O-307","ctb",[[1,2,3,4,5]],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]]
-    ];
+        ["O-74X","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
+        ["O-307","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
+        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]]];
     }
     else{
         cookieRoutes = JSON.parse(cookieString);
@@ -1485,6 +1498,9 @@ function changeLang(lang) {
   }
   function setCookieStops(){
     setCookie('stops', JSON.stringify(cookieStops));
+  }
+  function setCookieRoutes(){
+    setCookie('routes', JSON.stringify(cookieRoutes));
   }
   function addStopGroup(name, operator, stopID, route){
     //KMB can add only stop id, bravo requires both stopid and route
@@ -1619,6 +1635,14 @@ function changeLang(lang) {
         <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Nein")}</button><br><br>
     </div>`);
   }
+  function confirmDeleteLinie(groupIndex){
+    createOverlay();
+    $('#Linien').append(`<div id="ConfirmDelGroup" class="top">
+        <br>${getMessage("confirmDelGroup")}<br><br>
+        <button type="button" class="confirmbtn" onclick="removeConfirm();deleteLinie(${groupIndex})">${getMessage("Ja")}</button>&ensp;
+        <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Nein")}</button><br><br>
+    </div>`);
+  }
   function gruppeUmbenennen(groupIndex){
     createOverlay();
     $('#Haltestellen').append(`<div id="ConfirmDelGroup" class="top">
@@ -1629,6 +1653,9 @@ function changeLang(lang) {
         <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Cancel")}</button><br><br>
     </div>`);
     document.getElementById('myInput2').select();
+  }
+  function linieStopUmbenennen(groupIndex){
+
   }
   function removeConfirm(){
     removeOverlay();
@@ -1659,6 +1686,32 @@ function changeLang(lang) {
         renderStops();
         refreshHaltestellen();
     }
+  }
+  function moveUpLinie(groupIndex){
+    if(groupIndex!=0){
+        tempArray = cookieRoutes[groupIndex-1];
+        cookieRoutes[groupIndex-1] = cookieRoutes[groupIndex];
+        cookieRoutes[groupIndex] = tempArray;
+        setCookieRoutes();
+        renderRoutes();
+        refreshLinien();
+    }
+  }
+  function moveDownLinie(groupIndex){
+    if(groupIndex!=cookieRoutes.length -1){
+        tempArray = cookieRoutes[groupIndex + 1];
+        cookieRoutes[groupIndex+1] = cookieRoutes[groupIndex];
+        cookieRoutes[groupIndex] = tempArray;
+        setCookieRoutes();
+        renderRoutes();
+        refreshLinien();
+    }
+  }
+  function deleteLinie(groupIndex){
+    cookieRoutes.splice(groupIndex,1);
+    setCookieRoutes();
+    renderRoutes();
+    refreshLinien();
   }
 
 

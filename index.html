@@ -30,7 +30,9 @@
 </div>
   
 <div id="Linien" class="tabcontent">
-    <div id="routeTesting"></div>
+    <div style="display: flex; justify-content: center;display: none;">
+        <div id="routeTesting"></div>
+    </div>
     <div class="LinienModul">
         <span class="LinieNr">307</span>
         <div class="haltestelle">
@@ -105,7 +107,7 @@ function init(){
     getCookieStops();
     getCookieRoutes();
     renderStops();
-    //renderRoutes();
+    renderRoutes();
     checkCookie();
     getTime(1);
     setInterval(getTime,1000);
@@ -150,8 +152,8 @@ function renderStops(){
 }
 function renderRoutes(){
     var appending = '';
-    for(var i = 0; i < cookieStops.length; i++){
-        appending = appending + renderOneRoute(i,cookieRoutes[i][0]);
+    for(var i = 0; i < cookieRoutes.length; i++){
+        appending = appending + renderOneRoute(cookieRoutes[i][0], cookieRoutes[i][1], cookieRoutes[i][2], cookieRoutes[i][3], i);
     }
      $("#routeTesting").html(appending);
 
@@ -161,6 +163,54 @@ function renderOneStop(index, name){
         <table id="HaltestelleTable"><tr><td onclick="gruppeUmbenennen(${index})">${name}</td><td onclick="moveUpStopGroup(${index})">↑</td><td onclick="moveDownStopGroup(${index})">↓</td><td onclick="confirmDeleteStopGroup(${index})">✖</td></tr></table>
         <div id="Stop${index}" class="anzeige" data-content="loading">Lädt...</div>
         </div>`;
+}
+function renderOneRoute(routeString, operator, seqArray, nameArray, index){
+    var bandColour = 'gray';
+    if(operator == 'kmb'){bandColour = 'red'}
+    else if(operator == 'ctb'){bandColour = 'yellow'}
+    else if(operator == 'nwfb'){bandColour = 'white'}
+    var routeArray = routeString.split('-');
+    var route = routeArray[1];
+    var numOfStops = seqArray[seqArray.length-1] - seqArray[0] + 1;
+    console.log(bandColour);
+    var tableRows = "<tr>";
+    var j = 0;
+    for(let i = 0; i < numOfStops; i++){
+        tableRows += `<th>`;
+        if(seqArray[j] == seqArray[0] + i){
+            tableRows+= `${nameArray[j]}</th>`;
+            j++;
+        }
+        else{
+            tableRows += '</th>';
+        }
+    }
+    tableRows+=`</tr><tr style="background-color:${bandColour};">`;
+    for(let i = 0; i < numOfStops; i++){
+        tableRows += `<td><span class="circle"></span></td>`;
+    }
+    tableRows+=`</tr><tr>`;
+    j = 0;
+    for(let i = 0; i < numOfStops; i++){
+        tableRows += `<th>`;
+        if(seqArray[j] == seqArray[0] + i){
+            tableRows+= `- -:- -</td>`;
+            j++;
+        }
+        else{
+            tableRows += '</td>';
+        }
+    }
+    tableRows+=`</tr>`;
+    
+    return `<div class="LinienModul" id='Linie${index}'>
+        <Table class="LinieNr"><tr><td>${route}</td><td/><td onclick='moveUpLinie(${index})'>↑</td><td onclick='moveDownLinie(${index})'>↓</td><td onclick='confirmDeleteLinie(${index})'>✖</td></tr></table>
+        <div class="haltestelle">
+            <table class="haltestelleTabelle">
+            ${tableRows}
+            </table>
+        </div>
+    </div>`;
 }
 function refreshHaltestellen(){
     for(let i = 0; i < cookieStops.length; i++){

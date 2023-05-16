@@ -116,6 +116,15 @@ body {
 }
 .LinieNr{
   font-weight: bold;
+  width: 100%;
+}
+.LinieNr td:first-child{
+  width: 5em;
+  text-align:left!important;
+}
+.LinieNr td:nth-child(3),.LinieNr td:nth-child(4),.LinieNr td:last-child{
+  width: 30px;
+  max-width: 30px;
 }
 .LinienModul{
   padding: 1em;
