@@ -561,6 +561,131 @@ function getSingleRouteStopsAsync(route, bound, seq, stopnames){
 }
 
 
+function getSingleRouteStopsAsyncNew(routeString, seq, index){
+    var response = [];
+    var splitRoute = routeString.split("-");
+    var bound = splitRoute[0];
+    var SvcType = splitRoute[2]==null? "1" : splitRoute[2];
+    var setName = false
+    $.ajax({
+        type: 'GET',
+        url:`https://data.etabus.gov.hk/v1/transport/kmb/route-eta/${splitRoute[1]}/${SvcType}`,
+        dataType: 'json',
+        success: function(data){
+            let j = 0;
+            for(var i = 0; i < data['data'].length; i++){ 
+                if(setName == false && data['data'][i]['dir'] == bound){
+                    $(`#destName${index}`).html(data['data'][i]['dest_tc']);
+                    setName = true;
+                }
+                if(data['data'][i]['dir'] == bound && data['data'][i]['seq']==seq[j] && data['data'][i]['eta']!=null){
+                    if(response[j]==null){
+                        response[j] = ""; 
+                    }
+                    if(response[j]!=""){
+                        response[j] += "<br>";
+                    }
+                    var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                    diff /= 60;
+                    if(diff < -0.5){
+                        response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("weg") +")</span>";
+                    }
+                    else if( diff < 0.5 ){
+                        response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("Arr") +")</span>";
+                    }
+                    else if( diff < 1 ){
+                        response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min-B") +")";
+                    }
+                    else{
+                        response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min-B") +")";
+                    }
+                    //console.log(response[j]);
+                    if(data['data'][i+1]['seq']!=null && data['data'][i+1]['seq']!=data['data'][i]['seq']){
+                        j++;
+                    }
+                }
+            }
+            var seqArray = cookieRoutes[index][2];
+            var numOfStops = seqArray[seqArray.length-1] - seqArray[0] + 1;
+
+            var tt = document.getElementById(`hTabelle${index}`);
+            var ttt = tt.getElementsByTagName("tr")[2];
+
+            var jj=0;
+            for(let i = 0; i < numOfStops; i++){
+                if(seqArray[jj] == seqArray[0] + i){
+                    var tttt = ttt.getElementsByTagName("td")[i];
+                    tttt.innerHTML = response[jj]
+                    jj++;
+                }
+            }    
+            //console.log(response);
+        }
+    });
+}
+
+function getSingleRouteStopsAsyncNewBravo(oper, routeString, seq, index, stopids){
+    var response = [];
+    var splitRoute = routeString.split("-");
+    var bound = splitRoute[0];
+    for(let j = 0; j < seq.length; j++){
+        response[j] = '';
+        console.log(`https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/${oper}/${stopids[j]}/${splitRoute[1]}`);
+        $.ajax({
+            type: 'GET',
+            url:'https://rt.data.gov.hk/v1.1/transport/citybus-nwfb/eta/' + oper + '/' + stopids[j] + '/' + splitRoute[1],
+            dataType: 'json',
+            success: function(data){
+                for(let i = 0; i < data['data'].length; i++){ 
+                    if(data['data'][i]['dir'] == bound && i==0){
+                        $(`#destName${index}`).html(data['data'][i]['dest_tc']);
+                    }
+                    if(data['data'][i]['dir'] == bound && data['data'][i]['seq']==seq[j] && data['data'][i]['eta']!=null && data['data'][i]['eta']!=""){
+                        if(response[j]==null){
+                            response[j] = ""; 
+                        }
+                        if(response[j]!=""){
+                            response[j] += "<br>";
+                        }
+                        var diff =(new Date(Date.parse(data['data'][i]['eta'].substring(0,19))).getTime() - new Date(Date.parse(datetimenow)).getTime()) / 1000;
+                        diff /= 60;
+                        if(diff < -0.5){
+                            response[j] = response[j] + "<span style='color:gray;'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("weg") +")</span>";
+                        }
+                        else if( diff < 0.5 ){
+                            response[j] = response[j] + "<span class='blinking'>" + data['data'][i]['eta'].substring(11,16) + " ("+ getMessage("Arr") +")</span>";
+                        }
+                        else if( diff < 1 ){
+                            response[j] = response[j] + data['data'][i]['eta'].substring(11,16) + " (0 "+ getMessage("Min-B") +")";
+                        }
+                        else{
+                            response[j] = response[j] +  data['data'][i]['eta'].substring(11,16) + " (" + Math.round(diff) + " "+ getMessage("Min-B") +")";
+                        }
+                        console.log(response[j]);
+                    }
+                }
+
+                var seqArray = cookieRoutes[index][2];
+                var numOfStops = seqArray[seqArray.length-1] - seqArray[0] + 1;
+    
+                var tt = document.getElementById(`hTabelle${index}`);
+                var ttt = tt.getElementsByTagName("tr")[2];
+    
+                var jj=0;
+                for(let i = 0; i < numOfStops; i++){
+                    if(seqArray[jj] == seqArray[0] + i){
+                        var tttt = ttt.getElementsByTagName("td")[i];
+                        tttt.innerHTML = response[jj]
+                        jj++;
+                    }
+                }    
+            }
+        });
+    }
+
+}
+
+
 function getSingleRouteStopsBravo(company, stopids, route, stopnames){
     for(let i = 0; i < stopids.length; i ++){
         getSingleRouteSingleStopBravo(company, stopids[i], route, stopnames[i]);
@@ -1398,12 +1523,12 @@ function setLang180(lang){
     loading.classList.toggle("hidden-lang");  
     setCookie('lang',lang,180);
     dispLang = lang;
-    changeLang(lang);
     removeOverlay();
     clearTimeout(timeoutjob);
     renderStops();
+    changeLang(lang);
     tablehead = "<table><tr><th>"+ getMessage("Linie") +"</th><th>"+ getMessage("Zeit") +"</th><th>"+ getMessage("Ziel") +"</th><th><span style='font-size:12px'>"+ getMessage("Abfahrt") +"</span></th></tr>";
-    refreshHaltestellen();
+    refresh();
 }
 
 function langTimeout(){
@@ -1486,11 +1611,11 @@ function changeLang(lang) {
         setCookie('routes',`[["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],
         ["O-74X","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
         ["O-307","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
-        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]]]`,180);
+        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"],['002021','002022','002023','002024','002025']]]`,180);
         cookieRoutes = [["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],
         ["O-74X","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
         ["O-307","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
-        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]]];
+        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"],['002021','002022','002023','002024','002025']]];
     }
     else{
         cookieRoutes = JSON.parse(cookieString);
@@ -1627,6 +1752,15 @@ function changeLang(lang) {
     renderStops();
     refreshHaltestellen();
   }
+  function renameLinie(groupIndex,seqNumber){
+    var newName = document.getElementById('myInput2').value;
+    var seqIndex = cookieRoutes[groupIndex][2].indexOf(seqNumber);
+    cookieRoutes[groupIndex][3][seqIndex] = newName;
+    removeConfirm();
+    setCookieRoutes();
+    renderRoutes();
+    refreshLinien();
+  }
   function confirmDeleteStopGroup(groupIndex){
     createOverlay();
     $('#Haltestellen').append(`<div id="ConfirmDelGroup" class="top">
@@ -1654,8 +1788,17 @@ function changeLang(lang) {
     </div>`);
     document.getElementById('myInput2').select();
   }
-  function linieStopUmbenennen(groupIndex){
-
+  function linieStopUmbenennen(groupIndex, seqNumber){
+    createOverlay();
+    var seqIndex = cookieRoutes[groupIndex][2].indexOf(seqNumber);
+    $('#Linien').append(`<div id="ConfirmDelGroup" class="top">
+        <br>${getMessage("renameGroup")}<br><br>
+        <input id="myInput2" type="text" pattern="[A-Za-z0-9]" value="${cookieRoutes[groupIndex][3][seqIndex]}"/>
+        <br><br><br>
+        <button type="button" class="confirmbtn" onclick="renameLinie(${groupIndex},${seqNumber})">${getMessage("Confirm")}</button>&ensp;
+        <button type="button" class="confirmbtn" onclick="removeConfirm()">${getMessage("Cancel")}</button><br><br>
+    </div>`);
+    document.getElementById('myInput2').select();
   }
   function removeConfirm(){
     removeOverlay();

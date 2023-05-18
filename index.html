@@ -30,10 +30,10 @@
 </div>
   
 <div id="Linien" class="tabcontent">
-    <div style="display: flex; justify-content: center;display: none;">
-        <div id="routeTesting"></div>
+    <div style="justify-content: center; display: flex;">
+        <div id="routeTesting" style="max-width: 95vw;"></div>
     </div>
-    <div class="LinienModul">
+    <!--div class="LinienModul">
         <span class="LinieNr">307</span>
         <div class="haltestelle">
             <table class="haltestelleTabelle">
@@ -62,7 +62,7 @@
                 <tr><td id="TPM75K">--:--</td><td id="TPHMkt75K">--:--</td><td id="PHSt75K">--:--</td><td id="PHBrdg75K">--:--</td><td id="WingFldGdn75K">--:--</td><td></td><td id="FHEst75K">--:--</td><td id="YeeNgaCt75K">--:--</td></tr>
             </table>
         </div>
-    </div>
+    </div -->
 
 
 </div>
@@ -132,10 +132,20 @@ function getTime(firstload){
 }
 
 function refreshLinien(){
-    getSingleRouteStopsAsync("1-75K","I",[1,2,3,4,5,7,8],["TPM75K","TPHMkt75K","PHSt75K","PHBrdg75K","WingFldGdn75K","FHEst75K","YeeNgaCt75K"]);
-    getSingleRouteStopsAsync("1-307","O",[2,3,4,5],["CivicCtr307","PHSt307","WTKLn307","KFEst307"]);
-    getSingleRouteStopsAsync("1-74X","O",[2,3,4,5],["OnCheungRd74X","KFRd74X","WTKLn74X","KFEst74X"]);
-
+    //getSingleRouteStopsAsync("1-75K","I",[1,2,3,4,5,7,8],["TPM75K","TPHMkt75K","PHSt75K","PHBrdg75K","WingFldGdn75K","FHEst75K","YeeNgaCt75K"]);
+    //getSingleRouteStopsAsync("1-307","O",[2,3,4,5],["CivicCtr307","PHSt307","WTKLn307","KFEst307"]);
+    //getSingleRouteStopsAsync("1-74X","O",[2,3,4,5],["OnCheungRd74X","KFRd74X","WTKLn74X","KFEst74X"]);
+    for(let i = 0; i < cookieRoutes.length; i++){
+        if(cookieRoutes[i][1] == 'kmb'){
+            getSingleRouteStopsAsyncNew(cookieRoutes[i][0],cookieRoutes[i][2],i);
+        }
+        else if(cookieRoutes[i][1] == 'ctb'){
+            getSingleRouteStopsAsyncNewBravo('ctb',cookieRoutes[i][0], cookieRoutes[i][2], i, cookieRoutes[i][4]);
+        }
+        else if(cookieRoutes[i][1] == 'nwfb'){
+            getSingleRouteStopsAsyncNewBravo('nwfb',cookieRoutes[i][0], cookieRoutes[i][2], i, cookieRoutes[i][4]);
+        }
+    }
 }
 
 function refresh(){
@@ -153,7 +163,7 @@ function renderStops(){
 function renderRoutes(){
     var appending = '';
     for(var i = 0; i < cookieRoutes.length; i++){
-        appending = appending + renderOneRoute(cookieRoutes[i][0], cookieRoutes[i][1], cookieRoutes[i][2], cookieRoutes[i][3], i);
+        appending = appending + renderOneRoute(cookieRoutes[i][0], cookieRoutes[i][1], cookieRoutes[i][2], cookieRoutes[i][3], i, (cookieRoutes[i][4]==null?'':cookieRoutes[i][4]));
     }
      $("#routeTesting").html(appending);
 
@@ -164,8 +174,9 @@ function renderOneStop(index, name){
         <div id="Stop${index}" class="anzeige" data-content="loading">Lädt...</div>
         </div>`;
 }
-function renderOneRoute(routeString, operator, seqArray, nameArray, index){
+function renderOneRoute(routeString, operator, seqArray, nameArray, index, bravoStopIds){
     var bandColour = 'gray';
+    var dest = "";
     if(operator == 'kmb'){bandColour = 'red'}
     else if(operator == 'ctb'){bandColour = 'yellow'}
     else if(operator == 'nwfb'){bandColour = 'white'}
@@ -176,13 +187,13 @@ function renderOneRoute(routeString, operator, seqArray, nameArray, index){
     var tableRows = "<tr>";
     var j = 0;
     for(let i = 0; i < numOfStops; i++){
-        tableRows += `<th>`;
         if(seqArray[j] == seqArray[0] + i){
+            tableRows += `<th onclick='linieStopUmbenennen(${index},${seqArray[j]} )'>`;
             tableRows+= `${nameArray[j]}</th>`;
             j++;
         }
         else{
-            tableRows += '</th>';
+            tableRows += '<th />';
         }
     }
     tableRows+=`</tr><tr style="background-color:${bandColour};">`;
@@ -192,9 +203,9 @@ function renderOneRoute(routeString, operator, seqArray, nameArray, index){
     tableRows+=`</tr><tr>`;
     j = 0;
     for(let i = 0; i < numOfStops; i++){
-        tableRows += `<th>`;
+        tableRows += `<td>`;
         if(seqArray[j] == seqArray[0] + i){
-            tableRows+= `- -:- -</td>`;
+            tableRows+= `- - : - -</td>`;
             j++;
         }
         else{
@@ -204,9 +215,9 @@ function renderOneRoute(routeString, operator, seqArray, nameArray, index){
     tableRows+=`</tr>`;
     
     return `<div class="LinienModul" id='Linie${index}'>
-        <Table class="LinieNr"><tr><td>${route}</td><td/><td onclick='moveUpLinie(${index})'>↑</td><td onclick='moveDownLinie(${index})'>↓</td><td onclick='confirmDeleteLinie(${index})'>✖</td></tr></table>
+        <Table class="LinieNr"><tr><td>${route}</td><td id='destName${index}'/><td onclick='moveUpLinie(${index})'>↑</td><td onclick='moveDownLinie(${index})'>↓</td><td onclick='confirmDeleteLinie(${index})'>✖</td></tr></table>
         <div class="haltestelle">
-            <table class="haltestelleTabelle">
+            <table class="haltestelleTabelle" id='hTabelle${index}'>
             ${tableRows}
             </table>
         </div>

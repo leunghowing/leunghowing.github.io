@@ -114,13 +114,20 @@ body {
   font-weight: light;
   font-size: 12px;
 }
+.haltestelleTabelle th{
+  padding: 0 5px;
+}
 .LinieNr{
-  font-weight: bold;
   width: 100%;
 }
 .LinieNr td:first-child{
-  width: 5em;
+  width: 2.5em;
+  font-weight: bold;
   text-align:left!important;
+}
+.LinieNr td:nth-child(2){
+  text-align:left!important;
+  padding: 0 5px;
 }
 .LinieNr td:nth-child(3),.LinieNr td:nth-child(4),.LinieNr td:last-child{
   width: 30px;
