@@ -1073,7 +1073,7 @@ function getSearchRouteStops(route, bound, service_type){
                     if(cookieRoutes[routeInCookie][2].includes(Number(data['data'][i]['seq']))){tick = '✓';}
                 } 
                 response = response + `<tr><td style='background-color:red; border-bottom: 5px solid red; color:#00FF00; font-weight:bold'><span 
-                data-oper='kmb' data-route='${bound}-${routeString}' data-stopid='${data['data'][i]['stop']}' data-seq=${data['data'][i]['seq']} data-routeEx='${routeInCookie}' onclick='addorRemoveLinien(this)' class='circle'>${tick}</span></td><td>"+getMessage("loading")+"</td><td 
+                data-oper='kmb' data-route='${bound}-${routeString}' data-stopid='${data['data'][i]['stop']}' data-seq=${data['data'][i]['seq']} data-routeEx='${routeInCookie}' onclick='addorRemoveLinien(this)' class='circle'>${tick}</span></td><td>${getMessage("loading")}</td><td 
                 data-oper='kmb' data-route='${bound}-${routeString}' data-stopid='${data['data'][i]['stop']}'
                 onclick='showAddOptions(this,"kmb")'><button type="button" class="addbtn">⋮</button></td></tr><tr style='height:30px; font-size:12px'><td style='background-color:red;border-bottom: 3px solid black'/><td>- - : - -</td><td/></tr>`;
             }
@@ -1380,7 +1380,7 @@ function getSearchRouteStopsBravo(route, bound, oper){
                     if(cookieRoutes[routeInCookie][4].includes(data['data'][i]['stop'])){tick = '✓';}
                 } 
                 response = response + `<tr><td style='background-color:${color}; border-bottom: 5px solid ${color}; color:#00FF00; font-weight:bold'><span
-                data-oper='${oper}' data-route='${oneCharBound}-${route}' data-stopid='${data['data'][i]['stop']}' data-seq=${i+1} data-routeEx='${routeInCookie}' onclick='addorRemoveLinien(this)' class='circle'>${tick}</span></td><td>"+getMessage("loading")+"</td><td 
+                data-oper='${oper}' data-route='${oneCharBound}-${route}' data-stopid='${data['data'][i]['stop']}' data-seq=${i+1} data-routeEx='${routeInCookie}' onclick='addorRemoveLinien(this)' class='circle'>${tick}</span></td><td>${getMessage("loading")}</td><td 
                 data-oper='${oper}' data-route='${oneCharBound}-${route}' data-stopid='${data['data'][i]['stop']}'
                 onclick='showAddOptions(this)'><button type="button" class="addbtn">⋮</button></td></tr><tr style='height:30px; font-size:12px'><td style='background-color:${color};border-bottom: 3px solid black'/><td>--:--</td><td/></tr>`;
             }
