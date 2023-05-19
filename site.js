@@ -1665,10 +1665,10 @@ function changeLang(lang) {
   function getCookieRoutes(){
     var cookieString = getCookie('routes');
     if(cookieString == null || cookieString == ""){
-        setCookie('routes',`[["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],
-        ["O-74X","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
-        ["O-307","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
-        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"],['002021','002022','002023','002024','002025']]]`,180);
+        setCookie('routes','[["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],\
+        ["O-74X","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],\
+        ["O-307","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],\
+        ["O-307","ctb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"],["002021","002022","002023","002024","002025"]]]',180);
         cookieRoutes = [["I-75K","kmb",[1,2,3,4,5,7,8],["Tai Po Mkt Stn","Tai Po Hui Mkt","Po Heung St","Po Heung Brdg","Windfield Gdn","Fu Heng Est","Yee Nga Ct"]],
         ["O-74X","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","On Cheung Rd","Kwong Fuk Rd","Wan Tau Kok Ln","Kwong Fuk Est"]],
         ["O-307","kmb",[1,2,3,4,5],["Tai Po Ctrl Ter","Tai Po Civic Ctr","Po Heung St","Wan Tau Kok Ln","Kwong Fuk Est"]],
