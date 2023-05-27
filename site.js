@@ -1743,7 +1743,9 @@ function changeLang(lang) {
     }
     else{
         cookieRoutes[index][2].push(seq);
-        cookieRoutes[index][2].sort();
+        cookieRoutes[index][2].sort(function(a, b) {
+            return a - b;
+          });;
         var seqplace = cookieRoutes[index][2].indexOf(seq);
         if(oper == "ctb" || oper == "nwfb"){
             cookieRoutes[index][4].splice(seqplace, 0, stopid);
