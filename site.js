@@ -50,7 +50,7 @@ var messages = {
     "Min-A-de": "Min.",
     "Min-A-en": "min",
     "Min-A-ch": "分鐘",
-    "Min-A-ja": "分で",
+    "Min-A-ja": "分",
     "Min-B-de": "Min",
     "Min-B-en": "min",
     "Min-B-ch": "分鐘",
