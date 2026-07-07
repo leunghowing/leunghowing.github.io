@@ -121,11 +121,11 @@ function getTime(firstload){
     if(firstload){
         $.ajax({
                 type: 'GET',
-                url:'http://timeapi.io/api/v1/time/current/zone?timezone=Asia%2FHong_Kong',
+                url:'https://time.now/developer/api/timezone/Asia/Hong_Kong',
                 dataType: 'json',
                 success: function(data){
                     datetimenow = data['datetime'].substring(0,19);
-                    timenow = data['time'].substring(0,8);
+                    timenow = data['datetime'].substring(11,19);
                     datetimenowMS = Date.parse(data['datetime'])
                     timeOffset = datetimenowMS-systemTimeMS;
                     $("#clock").html(timenow);
