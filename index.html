@@ -136,7 +136,7 @@ function getTime(firstload){
     else{
         timenowMS = systemTimeMS + timeOffset;
         const tempDate = new Date(timenowMS);
-        timenow = date.toISOString().slice(11, 19);
+        timenow = tempDate.toISOString().slice(11, 19);
         $("#clock").html(timenow);
 
     }
