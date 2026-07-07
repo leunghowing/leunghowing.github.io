@@ -117,18 +117,30 @@ function init(){
 
 function getTime(firstload){
     var timenow = "";
-    $.ajax({
-        type: 'GET',
-        url:'http://worldtimeapi.org/api/timezone/Asia/Hong_Kong',
-        dataType: 'json',
-        success: function(data){
-            datetimenow = data['datetime'].substring(0,19);
-            timenow = data['datetime'].substring(11,19);
-            $("#clock").html(timenow);
-            if(firstload) refresh();
-        }
-    });
-   
+    var systemTimeMS =  new Date().getTime();
+    if(firstload){
+        $.ajax({
+                type: 'GET',
+                url:'https://timeapi.io/api/v1/time/current/zone?timezone=Asia%2FHong_Kong',
+                dataType: 'json',
+                success: function(data){
+                    datetimenow = data['datetime'].substring(0,19);
+                    timenow = data['time'].substring(0,8);
+                    datetimenowMS = Date.parse(data['datetime'])
+                    timeOffset = datetimenowMS-systemTimeMS;
+                    $("#clock").html(timenow);
+                    refresh();
+                }
+            });
+    }
+    else{
+        timenowMS = systemTimeMS + timeOffset;
+        const tempDate = new Date(timenowMS);
+        timenow = date.toISOString().slice(11, 19);
+        $("#clock").html(timenow);
+
+    }
+    
 }
 
 function refreshLinien(){

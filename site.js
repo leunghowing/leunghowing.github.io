@@ -3,6 +3,7 @@ var getAgain;
 var dispLang ="";
 var isAllOpLoaded = false;
 var checkInterval;
+var timeOffset;
 var cookieStops = [];
 var cookieRoutes = [];
 var allRouteData = [];
