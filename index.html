@@ -121,7 +121,7 @@ function getTime(firstload){
     if(firstload){
         $.ajax({
                 type: 'GET',
-                url:'https://timeapi.io/api/v1/time/current/zone?timezone=Asia%2FHong_Kong',
+                url:'http://timeapi.io/api/v1/time/current/zone?timezone=Asia%2FHong_Kong',
                 dataType: 'json',
                 success: function(data){
                     datetimenow = data['datetime'].substring(0,19);
