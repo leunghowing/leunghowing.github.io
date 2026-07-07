@@ -126,7 +126,12 @@ function getTime(firstload){
                 success: function(data){
                     datetimenow = data['datetime'].substring(0,19);
                     timenow = data['datetime'].substring(11,19);
-                    datetimenowMS = Date.parse(data['datetime'])
+                    datetimenowMS = Date.parse(datetimenow)
+                    //console.log(datetimenow)
+
+                    //console.log(datetimenowMS)
+                    //console.log(systemTimeMS)
+
                     timeOffset = datetimenowMS-systemTimeMS;
                     $("#clock").html(timenow);
                     refresh();
@@ -134,9 +139,12 @@ function getTime(firstload){
             });
     }
     else{
-        timenowMS = systemTimeMS + timeOffset;
+        timeZoneOffset = new Date().getTimezoneOffset()*60000;
+        timenowMS = systemTimeMS + timeOffset - timeZoneOffset;
         const tempDate = new Date(timenowMS);
         timenow = tempDate.toISOString().slice(11, 19);
+        datetimenow = tempDate.toISOString().substring(0,19);
+
         $("#clock").html(timenow);
 
     }
